@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cheerio AI — clickable prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --w:#fff; --pg:#F7F7FA; --ln:#E8E8EE; --ink:#16161D; --mu:#6B6B7B; --fa:#9A9AAB;
+  --pu:#6C36E0; --puS:#F3EFFE; --puB:#D9CCFA;
+  --gr:#16A34A; --grS:#E7F6EC; --am:#B45309; --amS:#FEF6E7; --rd:#DC2626; --rdS:#FDECEC;
+  --r:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--w);color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea{font-family:inherit;outline:none}
+:focus-visible{outline:2px solid var(--pu);outline-offset:2px}
+.hide{display:none !important}
+
+.frame{width:100%;min-height:100vh;background:var(--w);display:flex;flex-direction:column}
+
+/* ---------- sign in ---------- */
+#signin{font-family:'Plus Jakarta Sans',system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:0;}
+#signin .shell{
+  width:100%;max-width:1500px;background:var(--w);
+  border:1px solid var(--ln);border-radius:22px;overflow:hidden;
+  display:grid;grid-template-columns:53fr 47fr;min-height:82vh;
+}
+#signin /* ============ LEFT ============ */
+.left{
+  background:linear-gradient(160deg,var(--lav1) 0%,var(--lav2) 100%);
+  padding:52px 56px;display:flex;flex-direction:column;gap:30px;
+}
+#signin .logo{display:flex;align-items:center;gap:13px}
+#signin .mark{
+  width:40px;height:40px;border-radius:12px;flex:none;
+  background:linear-gradient(135deg,#7C5CF0,#5B34E0);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:24px;font-weight:700;line-height:1;
+}
+#signin .logo b{font-size:29px;font-weight:700;letter-spacing:-.02em}
+#signin .headline{font-size:41px;font-weight:600;line-height:1.24;letter-spacing:-.025em;max-width:13ch}
+#signin .blurb{font-size:17px;line-height:1.62;color:var(--mu);max-width:44ch}
+#signin /* app mockup */
+.mock{
+  background:var(--w);border-radius:16px;overflow:hidden;
+  box-shadow:0 22px 50px rgba(51,32,120,.14),0 3px 10px rgba(51,32,120,.06);
+  display:grid;grid-template-columns:56px 1fr 1.15fr;height:300px;
+}
+#signin .rail{background:#26262E;padding:14px 0;display:flex;flex-direction:column;align-items:center;gap:14px}
+#signin .rail .tl{display:flex;gap:5px;margin-bottom:6px}
+#signin .rail .tl i{width:8px;height:8px;border-radius:50%;display:block}
+#signin .ric{width:28px;height:28px;border-radius:8px;background:#3A3A45;display:flex;align-items:center;justify-content:center}
+#signin .ric.on{background:var(--pu)}
+#signin .ric svg{width:14px;height:14px;fill:none;stroke:#B9B9C6;stroke-width:1.8}
+#signin .ric.on svg{stroke:#fff}
+#signin .rail .me{margin-top:auto;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#F0997B,#D85A30)}
+#signin .mlist{border-right:1px solid #EFEDF5;display:flex;flex-direction:column}
+#signin .mlist h4{font-size:14px;font-weight:700;padding:14px 14px 10px}
+#signin .mrow{display:flex;gap:9px;padding:9px 14px;border-bottom:1px solid #F4F2F9;align-items:flex-start}
+#signin .mrow.on{background:#F7F5FF}
+#signin .avt{width:26px;height:26px;border-radius:50%;flex:none;position:relative;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:600}
+#signin .avt b{position:absolute;right:-2px;bottom:-2px;width:11px;height:11px;border-radius:50%;border:1.5px solid #fff}
+#signin .mrow .tx{min-width:0;flex:1}
+#signin .mrow .n{font-size:10.5px;font-weight:600;display:flex;align-items:center;gap:6px}
+#signin .mrow .n em{margin-left:auto;font-style:normal;font-size:8.5px;font-weight:400;color:var(--fa)}
+#signin .mrow .p{font-size:9.5px;color:var(--fa);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#signin .unread{background:#22C55E;color:#fff;font-size:8px;font-weight:700;border-radius:99px;padding:1px 5px;flex:none}
+#signin .mchat{display:flex;flex-direction:column}
+#signin .mchead{display:flex;align-items:center;gap:9px;padding:12px 14px;border-bottom:1px solid #F4F2F9}
+#signin .mchead .nm{font-size:11px;font-weight:700}
+#signin .mchead .ch{font-size:8.5px;color:#22C55E;font-weight:600}
+#signin .mchead .dots{margin-left:auto;color:var(--fa);font-size:13px;letter-spacing:1px}
+#signin .mbody{padding:14px;display:flex;flex-direction:column;gap:10px}
+#signin .mb{max-width:74%;padding:9px 11px;border-radius:11px;font-size:10.5px;line-height:1.5}
+#signin .mb.them{background:#F3F2F8;color:#2A2A36;border-bottom-left-radius:3px}
+#signin .mb.us{background:var(--pu);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+#signin .mb .ts{display:block;font-size:8px;margin-top:4px;opacity:.62;text-align:right}
+#signin .typing{background:#F3F2F8;border-radius:11px;padding:9px 12px;display:flex;gap:4px;width:fit-content}
+#signin .typing i{width:6px;height:6px;border-radius:50%;background:#C3C0D2;display:block;animation:bob 1.3s infinite}
+#signin .typing i:nth-child(2){animation-delay:.18s}
+#signin .typing i:nth-child(3){animation-delay:.36s}
+@keyframes bob{0%,60%,100%{opacity:.4}30%{opacity:1}}
+#signin .trust{font-size:13.5px;color:var(--fa);margin-top:auto}
+#signin .logos{display:flex;align-items:center;gap:34px;flex-wrap:wrap;color:#9C99AE}
+#signin .logos span{font-size:19px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+#signin .logos .l2{font-weight:500;letter-spacing:.16em;font-size:16px}
+#signin .logos .l3{font-style:italic;font-family:Georgia,serif;font-size:17px}
+#signin /* ============ RIGHT ============ */
+.right{padding:52px 92px;display:flex;flex-direction:column;justify-content:center;gap:0}
+#signin .rin{width:100%;max-width:500px;margin:0 auto}
+#signin .wb{font-size:37px;font-weight:700;letter-spacing:-.025em;text-align:center}
+#signin .sub{font-size:16px;color:var(--mu);text-align:center;margin-top:9px}
+#signin .form{margin-top:36px;display:flex;flex-direction:column;gap:20px}
+#signin label{font-size:14.5px;font-weight:600;display:block;margin-bottom:9px}
+#signin .inp{position:relative}
+#signin .inp input{
+  width:100%;border:1.5px solid var(--ln);border-radius:11px;
+  padding:16px 18px;font-size:15px;color:var(--ink);background:var(--w);
+  transition:border-color .15s;
+}
+#signin .inp input::placeholder{color:#A9A7BA}
+#signin .inp input:focus{border-color:var(--pu)}
+#signin .inp.bad input{border-color:#E24B4A}
+#signin .eye{position:absolute;right:16px;top:50%;transform:translateY(-50%);display:flex;padding:4px}
+#signin .eye svg{width:19px;height:19px;fill:none;stroke:#9C99AE;stroke-width:1.7}
+#signin .msg{font-size:13px;color:#D93A39;margin-top:8px;display:none}
+#signin .msg.show{display:block}
+#signin .opts{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#signin .rem{display:flex;align-items:center;gap:10px;font-size:14.5px;color:var(--ink)}
+#signin .box{width:21px;height:21px;border-radius:6px;border:1.5px solid #C9C6D8;background:var(--w);display:flex;align-items:center;justify-content:center;flex:none}
+#signin .box.on{background:var(--pu);border-color:var(--pu)}
+#signin .box svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:2.6;opacity:0}
+#signin .box.on svg{opacity:1}
+#signin .forgot{font-size:14.5px;font-weight:600;color:var(--pu)}
+#signin .signin{
+  width:100%;background:var(--pu);color:#fff;border-radius:11px;
+  padding:18px;font-size:16.5px;font-weight:700;letter-spacing:-.01em;
+  transition:background .15s;
+}
+#signin .signin:hover{background:var(--pu-d)}
+#signin .signin:active{transform:translateY(1px)}
+#signin .signin[disabled]{opacity:.65;cursor:default}
+#signin .div{display:flex;align-items:center;gap:16px;margin:4px 0}
+#signin .div hr{flex:1;border:none;border-top:1px solid var(--ln)}
+#signin .div span{font-size:14px;color:var(--mu)}
+#signin .sso{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+#signin .sso button{
+  border:1.5px solid var(--ln);border-radius:11px;padding:15px;
+  font-size:14.5px;font-weight:600;color:var(--ink);
+  display:flex;align-items:center;justify-content:center;gap:11px;
+  transition:border-color .15s,background .15s;
+}
+#signin .sso button:hover{border-color:#CFCBE2;background:#FBFAFE}
+#signin .sso svg{width:19px;height:19px;flex:none}
+#signin .foot{text-align:center;font-size:15px;color:var(--mu);margin-top:30px}
+#signin .foot b{color:var(--pu);font-weight:700;cursor:pointer}
+#signin .done{
+  margin-top:20px;background:#E9F7EE;color:#127C3C;
+  border-radius:11px;padding:14px 16px;font-size:14px;font-weight:500;
+  text-align:center;display:none;
+}
+#signin .done.show{display:block}
+
+@media(max-width:1180px){
+#signin .shell{grid-template-columns:1fr}
+#signin .left{display:none}
+#signin .right{padding:52px 32px}
+}
+@media(max-width:560px){
+#signin .shell{border:none;border-radius:0;min-height:100vh}
+#signin .right{padding:40px 22px}
+#signin .wb{font-size:29px}
+#signin .sso{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){}
+
+#signin .shell{max-width:none;border:none;border-radius:0;min-height:100vh;}
+
+/* ---------- app ---------- */
+#app{display:flex;min-height:100vh;width:100%}
+.nav{width:232px;flex:none;border-right:1px solid var(--ln);padding:18px 14px 14px;display:flex;flex-direction:column;gap:1px;background:var(--w);overflow-y:auto}
+.nav .brand{display:flex;align-items:center;gap:11px;padding:2px 8px 20px}
+.nav .brand .mk{width:32px;height:32px;border-radius:9px;flex:none;background:linear-gradient(135deg,#8A6BF5,#5B34E0);display:flex;align-items:center;justify-content:center;color:#fff;font-size:19px;font-weight:700;line-height:1}
+.nav .brand b{font-size:20px;font-weight:700;color:var(--pu);letter-spacing:-.02em}
+.nav-sec{font-size:10px;font-weight:600;color:#A6A4B4;letter-spacing:.09em;padding:18px 10px 7px}
+.nav-i{display:flex;align-items:center;gap:12px;padding:10px 11px;border-radius:10px;font-size:14px;color:#4B4B57;width:100%;text-align:left;line-height:1}
+.nav-i svg{width:19px;height:19px;flex:none;fill:none;stroke:#7C7A8C;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.nav-i .lbl{flex:1}
+.nav-i .cnt{background:var(--puS);color:var(--pu);font-size:11px;font-weight:600;border-radius:99px;padding:2px 8px}
+.nav-i:not(.off):hover{background:var(--pg)}
+.nav-i.on{background:var(--puS);color:var(--pu);font-weight:600}
+.nav-i.on svg{stroke:var(--pu)}
+.nav-i.off{color:#BFBDCB;cursor:not-allowed}
+.nav-i.off svg{stroke:#CFCDD9}
+.nav-i.off .cnt{background:var(--pg);color:#BFBDCB}
+.plan{margin-top:auto;border:1px solid var(--ln);border-radius:12px;padding:12px 13px;display:flex;flex-direction:column;gap:7px}
+.plan .r{display:flex;align-items:center;gap:9px}
+.plan .r svg{width:17px;height:17px;fill:none;stroke:var(--pu);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.plan .nm{font-size:13px;font-weight:600}
+.plan .rs{font-size:10.5px;color:#A6A4B4;margin-top:1px}
+.plan .pct{margin-left:auto;font-size:11px;color:#7C7A8C}
+.plan .trk2{height:5px;border-radius:99px;background:#EFEDF6;overflow:hidden}
+.plan .trk2 i{display:block;height:100%;width:78%;border-radius:99px;background:var(--pu)}
+.plan .vu{font-size:11.5px;color:var(--pu);font-weight:600;text-align:left}
+.main{flex:1;min-width:0;background:var(--pg);display:flex;flex-direction:column}
+.hdr{background:var(--w);border-bottom:1px solid var(--ln);padding:15px 22px;display:flex;align-items:center;gap:10px}
+.hdr h1{font-size:19px;font-weight:600}
+.hdr .sub{font-size:13px;color:var(--fa)}
+.grow{flex:1}
+.chip{border:1px solid var(--ln);border-radius:8px;padding:7px 13px;font-size:12px;color:var(--mu);background:var(--w)}
+.cta{background:var(--pu);color:#fff;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:500}
+.body{padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--w);border:1px solid var(--ln);border-radius:12px;padding:14px 16px}
+.ttl{font-size:14px;font-weight:600}
+
+/* overview */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.kpi{background:var(--w);border:1px solid var(--ln);border-radius:12px;padding:14px 16px}
+.kpi .l{font-size:11px;color:var(--mu)}
+.kpi .v{font-size:20px;font-weight:600;margin:5px 0 3px}
+.kpi .d{font-size:10px;color:var(--gr)}
+.kpi.pri{background:var(--puS);border-color:var(--puB)}
+.kpi.pri .v{font-size:23px}
+.kpi.spend{background:var(--amS);border-color:#F5DFB4}
+.kpi.spend .l,.kpi.spend .v,.kpi.spend .d{color:var(--am)}
+.two{display:grid;grid-template-columns:1.7fr 1fr;gap:14px}
+.two2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bars{display:flex;align-items:flex-end;gap:4px;height:180px;margin-top:12px}
+.bars div{flex:1;background:#CDBDF7;border-radius:3px 3px 0 0}
+.bars div.hot{background:var(--pu)}
+.axis{display:flex;justify-content:space-between;font-size:10px;color:var(--fa);margin-top:8px}
+.chn{margin-top:10px;display:flex;flex-direction:column;gap:11px}
+.chn-r .t{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:5px}
+.chn-r .t b{font-weight:500}
+.chn-r .t span{color:var(--mu);font-size:11px}
+.trk{height:6px;border-radius:99px;background:var(--ln);overflow:hidden}
+.trk i{display:block;height:100%;border-radius:99px}
+.lrow{display:flex;align-items:center;gap:11px;padding:9px 0;border-top:1px solid var(--ln);font-size:12px;width:100%;text-align:left}
+.lrow:first-of-type{border-top:none}
+.lrow .n{font-size:18px;font-weight:600;width:56px;flex:none}
+.lrow .s{font-size:11px;color:var(--fa)}
+.lrow.act:hover{background:var(--pg)}
+.bul{width:7px;height:7px;border-radius:50%;flex:none}
+.badge{font-size:10px;font-weight:500;padding:3px 8px;border-radius:6px;white-space:nowrap}
+
+/* tables */
+.tbl{background:var(--w);border:1px solid var(--ln);border-radius:12px;overflow:hidden}
+.tbl .th,.tbl .tr{display:flex;align-items:center;padding:10px 16px;gap:0}
+.tbl .th{background:var(--pg);font-size:10px;font-weight:500;color:var(--fa)}
+.tbl .tr{border-top:1px solid var(--ln);font-size:12px;width:100%;text-align:left}
+.tbl .tr:hover{background:var(--pg)}
+.tbl .tr.on{background:var(--puS)}
+.c1{flex:2.4;min-width:0}.c2{flex:1.4}.c3{flex:1}.c4{flex:1}.c5{flex:1}.c6{flex:1}
+.sub2{font-size:10px;color:var(--fa);margin-top:2px}
+.split{display:flex;flex:1;min-height:0}
+.pane{flex:1;min-width:0;padding:16px 18px;display:flex;flex-direction:column;gap:12px;overflow:auto}
+.side{width:360px;flex:none;border-left:1px solid var(--ln);background:var(--w);padding:16px 18px;display:flex;flex-direction:column;gap:13px;overflow:auto}
+.tabs{display:flex;gap:6px}
+.tab{padding:6px 12px;border-radius:8px;font-size:12px;color:var(--mu)}
+.tab.on{background:var(--puS);color:var(--pu);font-weight:500}
+
+/* inbox */
+.ibx{display:flex;flex:1;min-height:0}
+.clist{width:300px;flex:none;border-right:1px solid var(--ln);background:var(--w);overflow:auto}
+.chead{padding:15px 16px 11px;border-bottom:1px solid var(--ln);display:flex;flex-direction:column;gap:9px}
+.conv{display:block;width:100%;text-align:left;padding:12px 16px;border-bottom:1px solid var(--ln)}
+.conv:hover{background:var(--pg)}
+.conv.on{background:var(--puS)}
+.conv .t{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500}
+.conv .p{font-size:11px;color:var(--mu);margin:4px 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.conv .m{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--fa)}
+.thread{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--pg)}
+.thead{background:var(--w);border-bottom:1px solid var(--ln);padding:12px 18px;display:flex;align-items:center;gap:10px}
+.av{width:30px;height:30px;border-radius:50%;background:var(--puS);flex:none}
+.msgs{flex:1;padding:18px;display:flex;flex-direction:column;gap:10px;overflow:auto;min-height:280px}
+.bub{max-width:70%;padding:10px 13px;border-radius:12px;font-size:12px;line-height:1.55;background:var(--w);border:1px solid var(--ln);width:fit-content}
+.bub.me{background:var(--grS);border-color:transparent;align-self:flex-end}
+.bub .tag{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:9px;color:var(--fa)}
+.sess{background:var(--grS);color:var(--gr);font-size:11px;font-weight:500;padding:9px 18px;display:flex;justify-content:space-between;gap:10px}
+.sess.warn{background:var(--amS);color:var(--am)}
+.comp{background:var(--w);border-top:1px solid var(--ln);padding:12px 18px;display:flex;flex-direction:column;gap:10px}
+.comp textarea{border:none;resize:none;font-size:12px;min-height:40px;color:var(--ink)}
+.crow{display:flex;align-items:center;gap:8px}
+.mini{font-size:11px;padding:6px 11px;border-radius:8px;border:1px solid var(--ln);color:var(--mu);background:var(--w)}
+.mini.pu{background:var(--puS);border-color:transparent;color:var(--pu);font-weight:500}
+.sug{background:var(--puS);border:1px solid var(--puB);border-radius:var(--r);padding:12px 13px;display:flex;flex-direction:column;gap:9px}
+.sug p{font-size:12px;line-height:1.55}
+.srcs{display:flex;gap:6px;flex-wrap:wrap}
+.src{background:var(--w);color:var(--pu);font-size:9px;font-weight:500;padding:3px 8px;border-radius:6px}
+.note{background:var(--pg);border-radius:var(--r);padding:11px 13px;font-size:12px;line-height:1.55}
+.meta{font-size:9px;color:var(--fa);display:flex;justify-content:space-between;margin-top:6px}
+
+/* builder */
+.bwrap{display:flex;flex:1;min-height:0}
+.canvas{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--pg)}
+.pbar{background:var(--puS);padding:11px 18px;display:flex;gap:10px;align-items:center}
+.pbar input{flex:1;border:1px solid var(--puB);border-radius:8px;padding:9px 13px;font-size:12px;background:var(--w)}
+.stage{flex:1;overflow:auto;padding:22px;display:flex;flex-direction:column;align-items:center}
+.node{width:400px;background:var(--w);border:1px solid var(--ln);border-radius:12px;padding:11px 16px 11px 14px;display:flex;align-items:center;gap:11px;text-align:left}
+.node:hover{border-color:var(--puB)}
+.node.on{border:2px solid var(--pu)}
+.node.err{border:2px solid var(--rd)}
+.node .num{background:var(--pg);border-radius:6px;padding:3px 7px;font-size:11px;font-weight:600;color:var(--mu);flex:none}
+.node .k{font-size:9px;font-weight:600;color:var(--fa)}
+.node.on .k{color:var(--pu)}.node.err .k{color:var(--rd)}
+.node .t{font-size:13px;font-weight:500;margin-top:2px}
+.node .s{font-size:10px;color:var(--fa);margin-top:2px}
+.wire{width:1px;height:22px;background:#CFCFD8}
+.blab{background:var(--w);border:1px solid var(--ln);border-radius:99px;padding:2px 9px;font-size:10px;color:var(--mu)}
+.nl{background:var(--w);border-top:1px solid var(--ln);padding:12px 18px;display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.nl span{font-size:12px;color:var(--fa)}
+.nl b{font-size:12px;font-weight:500;color:var(--pu);background:var(--puS);padding:4px 9px;border-radius:6px}
+.alert{border-radius:var(--r);padding:11px 13px;display:flex;flex-direction:column;gap:5px}
+.alert.rd{background:var(--rdS);color:var(--rd)}
+.alert.gr{background:var(--grS);color:var(--gr)}
+.alert.am{background:var(--amS);color:var(--am)}
+.alert b{font-size:12px;font-weight:600}
+.alert p{font-size:11px;line-height:1.5}
+.fun{display:flex;flex-direction:column;gap:5px}
+.fun .t{display:flex;justify-content:space-between;font-size:12px}
+.fun .b{height:22px;border-radius:5px;background:var(--pu)}
+.fun .d{font-size:10px;color:var(--fa)}
+.tl{display:flex;flex-direction:column}
+.tle{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--ln)}
+.tle:first-child{border-top:none}
+.tle .k{font-size:9px;font-weight:600}
+.tle .x{font-size:12px;line-height:1.5;margin-top:3px}
+.tle .y{font-size:10px;color:var(--fa);margin-top:2px}
+@media(max-width:1100px){.two,.two2{grid-template-columns:1fr}.side{width:300px}.clist{width:250px}}
+@media(max-width:820px){#app{flex-direction:column}.nav{width:100%;flex-direction:row;overflow:auto}.nav-sec,.nav .brand,.plan{display:none}.split,.ibx,.bwrap{flex-direction:column}.side,.clist{width:100%;border-left:none}#signin{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<div class="frame">
+
+<!-- ============ 06 SIGN IN ============ -->
+<div id="signin">
+<div class="shell">
+
+  <!-- ---------------- left ---------------- -->
+  <section class="left">
+    <div class="logo"><span class="mark">C</span><b>Cheerio</b></div>
+
+    <h1 class="headline">AI-powered customer engagement platform</h1>
+    <p class="blurb">Automate conversations. Delight customers. Grow your business on every channel.</p>
+
+    <div class="mock">
+      <div class="rail">
+        <div class="tl"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i></div>
+        <span class="ric on"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"/></svg></span>
+        <span class="ric"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11a3 3 0 1 0 0-6"/></svg></span>
+        <span class="ric"><svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></span>
+        <span class="ric"><svg viewBox="0 0 24 24"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><circle cx="12" cy="6" r="2"/><path d="M12 8v3M6 16v-2h12v2"/></svg></span>
+        <span class="ric"><svg viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 5v3M9 13h.01M15 13h.01"/></svg></span>
+        <span class="ric"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg></span>
+        <span class="me"></span>
+      </div>
+
+      <div class="mlist">
+        <h4>Inbox</h4>
+        <div class="mrow on">
+          <span class="avt" style="background:#7C5CF0">RS<b style="background:#25D366"></b></span>
+          <span class="tx"><span class="n">Rahul Sharma<em>10:30 AM</em></span><span class="p">Hi, I need help with my order</span></span>
+          <span class="unread">2</span>
+        </div>
+        <div class="mrow">
+          <span class="avt" style="background:#D4537E">PP<b style="background:#E1306C"></b></span>
+          <span class="tx"><span class="n">Priya Patel<em>10:28 AM</em></span><span class="p">When will my order arrive?</span></span>
+        </div>
+        <div class="mrow">
+          <span class="avt" style="background:#378ADD">AV<b style="background:#0084FF"></b></span>
+          <span class="tx"><span class="n">Amit Verma<em>10:25 AM</em></span><span class="p">Thanks! That helped</span></span>
+        </div>
+        <div class="mrow">
+          <span class="avt" style="background:#1D9E75">NS<b style="background:#8E8EA0"></b></span>
+          <span class="tx"><span class="n">Neha Singh<em>10:20 AM</em></span><span class="p">I want to return a product</span></span>
+        </div>
+        <div class="mrow">
+          <span class="avt" style="background:#BA7517">KM<b style="background:#8E8EA0"></b></span>
+          <span class="tx"><span class="n">Karan Mehta<em>10:18 AM</em></span><span class="p">Do you have this in red?</span></span>
+        </div>
+      </div>
+
+      <div class="mchat">
+        <div class="mchead">
+          <span class="avt" style="background:#7C5CF0;width:28px;height:28px;font-size:10px">RS</span>
+          <span><span class="nm">Rahul Sharma</span><br><span class="ch">● WhatsApp</span></span>
+          <span class="dots">•••</span>
+        </div>
+        <div class="mbody">
+          <div class="mb them">Hi, I need help with my order<span class="ts">10:30 AM</span></div>
+          <div class="mb us">Hello Rahul! 👋 How can I help you today?<span class="ts">10:30 AM ✓✓</span></div>
+          <div class="typing"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="trust">Trusted by 10,000+ businesses worldwide</p>
+    <div class="logos">
+      <span>boAt</span>
+      <span>lenskart</span>
+      <span class="l2">ZIVAME</span>
+      <span>mCaffeine</span>
+      <span class="l3">the moms co.</span>
+    </div>
+  </section>
+
+  <!-- ---------------- right ---------------- -->
+  <section class="right">
+    <div class="rin">
+      <h2 class="wb">Welcome back 👋</h2>
+      <p class="sub">Sign in to continue to your account</p>
+
+      <div class="form">
+        <div>
+          <label for="email">Email address</label>
+          <div class="inp" id="wrapE"><input id="email" type="email" placeholder="you@company.com" autocomplete="email"></div>
+        </div>
+
+        <div>
+          <label for="pw">Password</label>
+          <div class="inp" id="wrapP">
+            <input id="pw" type="password" placeholder="Enter your password" autocomplete="current-password">
+            <button class="eye" id="eye" aria-label="Show password" onclick="toggleEye()">
+              <svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <p class="msg" id="msg"></p>
+
+        <div class="opts">
+          <button class="rem" id="rem" onclick="toggleRem()" aria-pressed="true">
+            <span class="box on" id="box"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></span>
+            Remember me
+          </button>
+          <button class="forgot" onclick="say('Password reset link sent to your email.')">Forgot password?</button>
+        </div>
+
+        <button class="signin" id="btn" onclick="doSignIn()">Sign in</button>
+
+        <div class="div"><hr><span>or continue with</span><hr></div>
+
+        <div class="sso">
+          <button onclick="ssoIn()">
+            <svg viewBox="0 0 48 48"><path fill="#4285F4" d="M45 24c0-1.6-.1-2.7-.4-4H24v7.5h12c-.2 2-1.6 5-4.5 7l6.9 5.3C42.5 36 45 30.6 45 24z"/><path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.4-5.2l-6.9-5.3c-1.9 1.3-4.4 2.2-7.5 2.2-5.7 0-10.6-3.8-12.3-9.1l-7.1 5.5C8.2 41.2 15.5 46 24 46z"/><path fill="#FBBC05" d="M11.7 28.6c-.5-1.3-.7-2.7-.7-4.1s.3-2.8.7-4.1l-7.1-5.5C3 17.8 2 20.8 2 24s1 6.2 2.6 9.1l7.1-4.5z"/><path fill="#EA4335" d="M24 10.6c3.2 0 5.4 1.4 6.6 2.5l5.9-5.8C32.9 4 27.9 2 24 2 15.5 2 8.2 6.8 4.6 14.9l7.1 5.5c1.7-5.3 6.6-9.8 12.3-9.8z"/></svg>
+            Continue with Google
+          </button>
+          <button onclick="ssoIn()">
+            <svg viewBox="0 0 24 24"><path fill="#F25022" d="M2 2h9.5v9.5H2z"/><path fill="#7FBA00" d="M12.5 2H22v9.5h-9.5z"/><path fill="#00A4EF" d="M2 12.5h9.5V22H2z"/><path fill="#FFB900" d="M12.5 12.5H22V22h-9.5z"/></svg>
+            Continue with Microsoft
+          </button>
+        </div>
+
+        <p class="done" id="done"></p>
+      </div>
+
+      <p class="foot">Don't have an account? <b onclick="say('Opening sign up…')">Sign up</b></p>
+    </div>
+  </section>
+
+</div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app" class="hide">
+  <nav class="nav">
+    <div class="brand"><span class="mk">C</span><b>Cheerio AI</b></div>
+    <button class="nav-i" data-p="overview" onclick="go('overview')"><svg viewBox="0 0 24 24"><path d="M3 10.2 12 3l9 7.2V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span class="lbl">Overview</span></button>
+    <button class="nav-i" data-p="inbox" onclick="go('inbox')"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.5-.7L3 21l1.8-5.1A8.3 8.3 0 0 1 3.6 11.5 8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/></svg><span class="lbl">Inbox</span><span class="cnt">32</span></button>
+    <button class="nav-i" data-p="contacts" onclick="go('contacts')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg><span class="lbl">Contacts</span></button>
+    <button class="nav-i" data-p="campaigns" onclick="go('campaigns')"><svg viewBox="0 0 24 24"><path d="M21.5 2.5 2.5 10l7.6 2.9L13 20.5z"/><path d="m10.1 12.9 4.3-4.3"/></svg><span class="lbl">Campaigns</span></button>
+    <div class="nav-sec">AUTOMATION</div>
+    <button class="nav-i" data-p="builder" onclick="go('builder')"><svg viewBox="0 0 24 24"><rect x="9" y="2.5" width="6" height="5" rx="1.5"/><rect x="2.5" y="16.5" width="6" height="5" rx="1.5"/><rect x="15.5" y="16.5" width="6" height="5" rx="1.5"/><path d="M12 7.5v4.5M5.5 16.5V12h13v4.5"/></svg><span class="lbl">Workflows</span></button>
+    <button class="nav-i off" disabled aria-disabled="true" title="Not in this prototype"><svg viewBox="0 0 24 24"><rect x="3.5" y="8" width="17" height="12" rx="3"/><path d="M12 4.5V8M8.5 13.5h.01M15.5 13.5h.01M9.5 17h5"/><path d="M12 2.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><span class="lbl">AI Agents</span></button>
+    <button class="nav-i off" disabled aria-disabled="true" title="Not in this prototype"><svg viewBox="0 0 24 24"><rect x="4.5" y="2.5" width="15" height="19" rx="2.5"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg><span class="lbl">Forms</span></button>
+    <div class="nav-sec">COMMERCE</div>
+    <button class="nav-i off" disabled aria-disabled="true" title="Not in this prototype"><svg viewBox="0 0 24 24"><path d="M4 8h16l-1.2 12.1a1.5 1.5 0 0 1-1.5 1.4H6.7a1.5 1.5 0 0 1-1.5-1.4z"/><path d="M8.5 8V6a3.5 3.5 0 1 1 7 0v2"/></svg><span class="lbl">Catalog</span></button>
+    <button class="nav-i off" disabled aria-disabled="true" title="Not in this prototype"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6.5 15h3"/></svg><span class="lbl">Payments</span></button>
+    <div class="nav-sec">ANALYTICS</div>
+    <button class="nav-i off" disabled aria-disabled="true" title="Not in this prototype"><svg viewBox="0 0 24 24"><path d="M4.5 20V11M12 20V4M19.5 20v-6"/></svg><span class="lbl">Analytics</span></button>
+    <button class="nav-i off" disabled aria-disabled="true" title="Not in this prototype"><svg viewBox="0 0 24 24"><path d="M14 2.5H7a2.5 2.5 0 0 0-2.5 2.5v14A2.5 2.5 0 0 0 7 21.5h10a2.5 2.5 0 0 0 2.5-2.5V8z"/><path d="M14 2.5V8h5.5M8.5 13h7M8.5 17h5"/></svg><span class="lbl">Reports</span></button>
+    <div class="nav-sec">CONNECTIONS</div>
+    <button class="nav-i off" disabled aria-disabled="true" title="Not in this prototype"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><path d="M7 7a7 7 0 0 0 0 10M17 7a7 7 0 0 1 0 10M4 4a11 11 0 0 0 0 16M20 4a11 11 0 0 1 0 16"/></svg><span class="lbl">Channels</span></button>
+    <button class="nav-i off" disabled aria-disabled="true" title="Not in this prototype"><svg viewBox="0 0 24 24"><path d="M10 3.5h4v3a2 2 0 0 0 2 2h3v4h-3a2 2 0 0 0-2 2v3h-4v-3a2 2 0 0 0-2-2H5v-4h3a2 2 0 0 0 2-2z"/></svg><span class="lbl">Integrations</span></button>
+    <div class="nav-sec">SETTINGS</div>
+    <button class="nav-i off" disabled aria-disabled="true" title="Not in this prototype"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16.5 5.2a3.5 3.5 0 0 1 0 5.6M18 20a6.4 6.4 0 0 0-2-4.7"/></svg><span class="lbl">Team</span></button>
+    <button class="nav-i off" disabled aria-disabled="true" title="Not in this prototype"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2 2 2 0 1 1-4 0 1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 15a2 2 0 1 1 0-4 1.7 1.7 0 0 0 1.2-2.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10 4.1a2 2 0 1 1 4 0 1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 21 11a2 2 0 1 1 0 4 1.7 1.7 0 0 0-1.6 1z"/></svg><span class="lbl">Settings</span></button>
+    <div class="plan">
+      <div class="r"><svg viewBox="0 0 24 24"><rect x="3.5" y="8" width="17" height="12" rx="3"/><path d="M12 4.5V8M8.5 13.5h.01M15.5 13.5h.01M9.5 17h5"/><path d="M12 2.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><span><span class="nm">Pro Plan</span><div class="rs">Resets in 24 days</div></span><span class="pct">78%</span></div>
+      <div class="trk2"><i></i></div>
+      <button class="vu" onclick="signOut()">Sign out</button>
+    </div>
+  </nav>
+  <main class="main" id="main"></main>
+</div>
+
+</div>
+
+<script>
+/* ---------------- data ---------------- */
+var CONV=[
+ {n:"Rahul Sharma",ch:"WhatsApp",t:"10:30",sess:"open",ai:0,p:"Hi, I want to check the status of my order",
+  msgs:[[0,"Hi, I want to check the status of my order"],[1,"Sure — could you share your order ID?",1],[0,"My order ID is #12345"],[1,"Your order #12345 shipped and arrives by 18 May. Track it here.",1],[0,"Perfect, thanks!"]],
+  sum:"Customer asked for order status. Agent confirmed #12345 shipped, ETA 18 May. Customer satisfied. No open issue.",
+  sug:"Glad I could help, Rahul! Your order is on track for 18 May. Anything else I can look into?",
+  src:["Order API","Shipping policy"],
+  acts:[["Searched order records","order #12345 · 10:31 AM"],["Answered from shipping policy","confidence 0.91 · 10:31 AM"],["Did not escalate","no refund or complaint detected"]]},
+ {n:"Priya Mehta",ch:"Instagram",t:"10:28",sess:"na",ai:0,p:"Do you have this product in black?",
+  msgs:[[0,"Do you have this product in black?"]],
+  sum:"Product availability question. No agent reply yet. Stock lookup needed.",
+  sug:"Hi Priya! Yes, we have it in black — I can send you the link. Want me to hold one for you?",
+  src:["Catalog"],
+  acts:[["Matched to catalog item","Yoga Mat Pro · 2 variants"],["Waiting for a human","product hold needs approval"]]},
+ {n:"Amit Verma",ch:"Email",t:"10:22",sess:"na",ai:1,p:"I need help with the refund process",
+  msgs:[[0,"I need help with the refund process"],[1,"I can help with that. Could you confirm the order number?",1]],
+  sum:"Refund request. Agent asked for the order number. Refund amount unknown — may need escalation.",
+  sug:"Thanks Amit. Once you share the order number I'll check whether it's inside our 14-day window.",
+  src:["Refund policy"],
+  acts:[["Read refund policy","14-day window · confidence 0.88"],["Flagged for review","refunds over ₹5,000 need a human"]]},
+ {n:"Sneha Iyer",ch:"WhatsApp",t:"10:15",sess:"41m",ai:1,p:"Can I reschedule my appointment?",
+  msgs:[[0,"Can I reschedule my appointment?"],[1,"Of course. What day works better for you?",1]],
+  sum:"Reschedule request. Agent asked for a new date. Session window closing in 41 minutes.",
+  sug:"No problem, Sneha. I have Thursday 4pm or Friday 11am free — which suits you?",
+  src:["Booking calendar"],
+  acts:[["Checked booking calendar","3 slots open this week"],["Session warning","41 min left before a template is required"]]},
+ {n:"Ananya Pillai",ch:"WhatsApp",t:"09:50",sess:"6h",ai:1,p:"Where is my shipment?",
+  msgs:[[0,"Where is my shipment?"],[1,"It left our Pune warehouse this morning and arrives Thursday.",1],[0,"Thank you!"]],
+  sum:"Shipment tracking question, answered from courier data. Resolved.",
+  sug:"You're welcome! I'll message you again when it's out for delivery.",
+  src:["Courier API"],
+  acts:[["Looked up tracking","AWB 4471223 · in transit"],["Resolved without escalation",""]]},
+ {n:"Raj Patel",ch:"WhatsApp",t:"09:10",sess:"closed",ai:0,p:"I haven't received my invoice",
+  msgs:[[0,"I haven't received my invoice"]],
+  sum:"Invoice request. The 24-hour window has closed, so a paid template is required to reply.",
+  sug:"Hi Raj — sending your invoice for order #12088 now. Let me know if anything looks wrong.",
+  src:["Billing"],
+  acts:[["Found invoice","order #12088"],["Blocked","window closed · needs template invoice_resend_v1"]]}
+];
+var CONTACTS=[
+ {n:"Rahul Sharma",via:"WhatsApp",seg:"Customer",sess:"open",act:"2m ago",val:"₹18,760",ph:"+91 98765 43210",city:"Bangalore",conv:28,first:"10 May",
+  tl:[["AGENT","Support agent replied with order status","Cited 2 sources · not escalated","10:31 AM","pu"],["PERSON","Sneha Iyer added note “prefers WhatsApp”","","10:28 AM","mu"],["WORKFLOW","Order confirmation sent","Template order_conf_v2 · ₹0.72","10 May","gr"],["AGENT","Qualified as high intent (0.84)","Routed to sales queue","10 May","pu"],["CAMPAIGN","May Offer Campaign delivered","Opened, not clicked","8 May","mu"]]},
+ {n:"Priya Mehta",via:"Instagram",seg:"Lead",sess:"41m",act:"5m ago",val:"—",ph:"+91 91234 56789",city:"Mumbai",conv:3,first:"28 Apr",
+  tl:[["PERSON","Asked about black colourway","","10:28 AM","mu"],["AGENT","Matched to catalog item","Yoga Mat Pro · awaiting human","10:28 AM","pu"],["CAMPAIGN","Summer Sale Blast delivered","Clicked","6 May","mu"]]},
+ {n:"Amit Verma",via:"Email",seg:"Lead",sess:"na",act:"15m ago",val:"—",ph:"amit.verma@gmail.com",city:"Delhi",conv:6,first:"2 May",
+  tl:[["AGENT","Flagged refund for human review","over ₹5,000 threshold","10:22 AM","pu"],["WORKFLOW","Refund workflow started","step 2 of 4","10:22 AM","gr"]]},
+ {n:"Sneha Iyer",via:"WhatsApp",seg:"Customer",sess:"open",act:"32m ago",val:"₹42,110",ph:"+91 99887 76655",city:"Chennai",conv:41,first:"12 Jan",
+  tl:[["AGENT","Offered reschedule slots","Booking calendar · 3 open","10:15 AM","pu"],["PERSON","Tagged High Value by Arjun Kumar","","1 May","mu"],["WORKFLOW","Appointment reminder sent","₹0.72","9 May","gr"]]},
+ {n:"Ananya Pillai",via:"WhatsApp",seg:"Lead",sess:"6h",act:"2h ago",val:"—",ph:"+91 77665 44332",city:"Kochi",conv:4,first:"5 May",
+  tl:[["AGENT","Resolved tracking question","Courier API","09:50 AM","pu"],["CAMPAIGN","Abandoned cart reminder sent","₹0.72 · converted","4 May","gr"]]},
+ {n:"Raj Patel",via:"WhatsApp",seg:"Lead",sess:"closed",act:"Yesterday",val:"—",ph:"+91 77331 22345",city:"Ahmedabad",conv:2,first:"20 Apr",
+  tl:[["AGENT","Blocked by closed window","needs template invoice_resend_v1","09:10 AM","pu"],["PERSON","Marked follow up by Arjun Kumar","","Yesterday","mu"]]}
+];
+var CAMPS=[
+ {n:"May Offer Campaign",sub:"WhatsApp · Promotional",aud:"VIP + Repeat · 12,456",st:"Sent",del:"98.5%",sp:"₹18,490",cpc:"₹32.55",tpl:"may_offer_v2",date:"8 May, 10:30",ch:"WhatsApp",
+  fun:[["Sent","25,680",1],["Delivered","25,295",.985],["Read","16,768",.653],["Clicked","5,239",.204],["Converted","568",.022]],
+  drop:["1.5% undelivered","33.7% never opened","44.9% opened, no click","89.2% clicked, no purchase"],note:"₹0.72 per conversation · 568 conversions"},
+ {n:"Abandoned Cart Reminder",sub:"WhatsApp · Transactional",aud:"Cart abandoners · 8,932",st:"Running",del:"97.8%",sp:"₹8,885",cpc:"₹25.98",tpl:"cart_recover_v3",date:"Running since 1 May",ch:"WhatsApp",
+  fun:[["Sent","12,340",1],["Delivered","12,068",.978],["Read","6,662",.540],["Clicked","2,468",.200],["Converted","342",.028]],
+  drop:["2.2% undelivered","43.8% never opened","34.0% opened, no click","86.1% clicked, no purchase"],note:"₹0.72 per conversation · 342 conversions"},
+ {n:"Summer Sale Blast",sub:"Instagram · Promotional",aud:"All customers · 15,230",st:"Sent",del:"97.2%",sp:"₹0",cpc:"₹0.00",tpl:"—",date:"4 May, 09:00",ch:"Instagram",
+  fun:[["Sent","30,250",1],["Delivered","29,403",.972],["Read","18,013",.595],["Clicked","5,929",.196],["Converted","729",.024]],
+  drop:["2.8% undelivered","37.7% never opened","39.9% opened, no click","87.7% clicked, no purchase"],note:"No per-message cost on this channel"},
+ {n:"New Product Launch",sub:"Email · Promotional",aud:"Newsletter · 9,856",st:"Sent",del:"99.1%",sp:"₹98",cpc:"₹0.24",tpl:"—",date:"2 May, 11:00",ch:"Email",
+  fun:[["Sent","9,856",1],["Delivered","9,767",.991],["Read","6,791",.689],["Clicked","2,178",.221],["Converted","412",.042]],
+  drop:["0.9% undelivered","30.2% never opened","46.8% opened, no click","81.1% clicked, no purchase"],note:"₹0.01 per email · 412 conversions"},
+ {n:"VIP Exclusive Offer",sub:"WhatsApp · Promotional",aud:"VIP · 2,345",st:"Draft",del:"—",sp:"est ₹1,688",cpc:"—",tpl:"vip_offer_v1",date:"Not scheduled",ch:"WhatsApp",
+  fun:[["Sent","0",0],["Delivered","0",0],["Read","0",0],["Clicked","0",0],["Converted","0",0]],
+  drop:[],note:"Estimated ₹1,688 at ₹0.72 × 2,345 recipients"}
+];
+var NODES=[
+ {k:"TRIGGER",t:"Incoming WhatsApp message",s:"When a message is received",ch:"WhatsApp",msg:"",cost:"free"},
+ {k:"ACTION",t:"Send welcome message",s:"Hi! Welcome to ABC Clinic",ch:"WhatsApp",msg:"Hi 👋 Welcome to ABC Clinic! How can we help you today?",cost:"free"},
+ {k:"ASK",t:"What would you like to do?",s:"3 buttons · Book / Info / Support",ch:"WhatsApp",msg:"What would you like to do?",cost:"free"},
+ {k:"ACTION",t:"Ask preferred date and time",s:"Free text · saved to contact",ch:"WhatsApp",msg:"Great, {{first_name}} — what date and time work best for you?",cost:"free",br:"Book appointment"},
+ {k:"CONDITION",t:"Is the clinic open now?",s:"Yes → confirm · No → queue",ch:"—",msg:"",cost:"free"},
+ {k:"ACTION",t:"Send confirmation template",s:"appointment_conf_v1 · not approved yet",ch:"WhatsApp",msg:"Your appointment on {{date}} at {{time}} is confirmed.",cost:"paid",err:1,br:"Yes"}
+];
+
+/* ---------------- state ---------------- */
+var S={page:"overview",conv:0,tab:"copilot",contact:0,camp:0,node:3,tested:false,live:false,draft:""};
+var $=function(h){var d=document.createElement("div");d.innerHTML=h.trim();return d.firstChild;};
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+var shown=false, remember=true;
+
+function toggleEye(){
+  var p=document.getElementById('pw'), e=document.getElementById('eye');
+  shown=!shown;
+  p.type = shown ? 'text' : 'password';
+  e.setAttribute('aria-label', shown ? 'Hide password' : 'Show password');
+  e.innerHTML = shown
+    ? '<svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7c2 0 3.7.6 5.2 1.5M22 12s-3.6 7-10 7c-2 0-3.8-.6-5.3-1.6"/><path d="M4 4l16 16"/></svg>'
+    : '<svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+  p.focus();
+}
+
+function toggleRem(){
+  remember=!remember;
+  document.getElementById('box').classList.toggle('on',remember);
+  document.getElementById('rem').setAttribute('aria-pressed',remember);
+}
+
+function clearErr(){
+  document.getElementById('msg').classList.remove('show');
+  document.getElementById('wrapE').classList.remove('bad');
+  document.getElementById('wrapP').classList.remove('bad');
+}
+function err(text,which){
+  var m=document.getElementById('msg');
+  m.textContent=text; m.classList.add('show');
+  if(which) document.getElementById(which).classList.add('bad');
+}
+function say(text){
+  var d=document.getElementById('done');
+  d.textContent=text; d.classList.add('show');
+  clearTimeout(window._t);
+  window._t=setTimeout(function(){d.classList.remove('show');},2600);
+}
+
+function doSignIn(){
+  clearErr();
+  var e=document.getElementById('email').value.trim();
+  var p=document.getElementById('pw').value;
+  if(!e){ err('Enter your email address.','wrapE'); return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)){ err('That email address doesn\'t look right.','wrapE'); return; }
+  if(!p){ err('Enter your password.','wrapP'); return; }
+  if(p.length<6){ err('Your password is at least 6 characters.','wrapP'); return; }
+
+  var b=document.getElementById('btn');
+  b.disabled=true; b.textContent='Signing in…';
+  setTimeout(function(){
+    b.disabled=false; b.textContent='Sign in';
+    enterApp();
+  },900);
+}
+
+function enterApp(){
+  document.getElementById('signin').classList.add('hide');
+  document.getElementById('app').classList.remove('hide');
+  go('overview'); window.scrollTo(0,0);
+}
+function ssoIn(){ enterApp(); }
+function signOut(){
+  document.getElementById('app').classList.add('hide');
+  document.getElementById('signin').classList.remove('hide');
+  clearErr(); window.scrollTo(0,0);
+}
+document.getElementById('email').addEventListener('input',clearErr);
+document.getElementById('pw').addEventListener('input',clearErr);
+document.addEventListener('keydown',function(ev){
+  if(ev.key==='Enter'){var a=document.activeElement;if(a&&(a.id==='email'||a.id==='pw'))doSignIn();}
+});
+function go(p){
+  S.page=p;
+  var ns=document.querySelectorAll(".nav-i");
+  for(var i=0;i<ns.length;i++) ns[i].classList.toggle("on",ns[i].getAttribute("data-p")===p);
+  render();
+  window.scrollTo(0,0);
+}
+
+/* ---------------- renderers ---------------- */
+function render(){
+  var m=document.getElementById("main");
+  m.innerHTML="";
+  ({overview:rOverview,inbox:rInbox,contacts:rContacts,campaigns:rCampaigns,builder:rBuilder}[S.page]||rOverview)(m);
+}
+
+function rOverview(m){
+  var bars="";var d=[52,61,48,73,88,64,57,79,95,71,66,84,110,92,77,88,120,101,86,94,131,108,90,99,142,118,96,107,150,126,104];
+  for(var i=0;i<d.length;i++) bars+='<div class="'+(i>26?"hot":"")+'" style="height:'+(d[i]/150*100)+'%"></div>';
+  var chn=[["WhatsApp","10,046","₹1,62,410",55,"#16A34A"],["Instagram","3,653","₹0",20,"#D4537E"],["Email","1,826","₹1,830",10,"#378ADD"],["SMS","1,461","₹19,980",8,"#EF9F27"],["Messenger","913","₹0",5,"#7F77DD"]];
+  var ch="";for(i=0;i<chn.length;i++){var c=chn[i];
+    ch+='<div class="chn-r"><div class="t"><b>'+c[0]+'</b><span class="grow"></span><span>'+c[1]+'</span><span style="color:var(--ink);font-weight:500">'+c[2]+'</span></div><div class="trk"><i style="width:'+c[3]+'%;background:'+c[4]+'"></i></div></div>';}
+  var ag=[["412","Resolved without a human","74% of all conversations","var(--gr)"],["88","Escalated to an agent","avg 3.2 min to pickup","var(--am)"],["64","Drafted a reply for review","51 accepted, 13 edited","var(--pu)"],["1,203","Ran a workflow action","2 failed — see Needs you","var(--mu)"]];
+  var agh="";for(i=0;i<ag.length;i++) agh+='<div class="lrow"><span class="n" style="color:'+ag[i][3]+'">'+ag[i][0]+'</span><span><span style="font-weight:500">'+ag[i][1]+'</span><br><span class="s">'+ag[i][2]+'</span></span></div>';
+  var ny=[["Workflow failed","Lead qualification · template not approved","2 runs lost","var(--rd)","builder"],["Agent escalated","Rahul Sharma · refund over ₹5,000","4m waiting","var(--am)","inbox"],["Session expiring","Priya Mehta · 41 min left to reply free","WhatsApp","var(--am)","inbox"],["Budget pace","Messaging spend 31% above last month","Review","var(--mu)","campaigns"],["Template rejected","winback_v3 · policy violation","Fix","var(--rd)","builder"]];
+  var nyh="";for(i=0;i<ny.length;i++) nyh+='<button class="lrow act" onclick="go(\''+ny[i][4]+'\')"><span class="bul" style="background:'+ny[i][3]+'"></span><span style="flex:1"><span style="font-weight:500">'+ny[i][0]+'</span><br><span class="s">'+ny[i][1]+'</span></span><span style="color:var(--mu)">'+ny[i][2]+'</span></button>';
+  m.appendChild($('<div class="hdr"><h1>Overview</h1><span class="sub">Arjun · Habuild</span><span class="grow"></span><span class="chip">May 1 – May 31</span><span class="chip">Filters</span></div>'));
+  m.appendChild($('<div class="body">'+
+   '<div class="kpis">'+
+    '<div class="kpi pri"><div class="l">Revenue</div><div class="v">₹18,76,540</div><div class="d">+22.4% vs Apr</div></div>'+
+    '<div class="kpi spend"><div class="l">Messaging spend</div><div class="v">₹1,84,220</div><div class="d">+31.2% vs Apr</div></div>'+
+    '<div class="kpi"><div class="l">Conversations</div><div class="v">18,265</div><div class="d">+8.1% vs Apr</div></div>'+
+    '<div class="kpi"><div class="l">Conversions</div><div class="v">2,487</div><div class="d">+20.6% vs Apr</div></div>'+
+    '<div class="kpi"><div class="l">Cost per conversion</div><div class="v">₹74.07</div><div class="d">−8.8% vs Apr</div></div>'+
+   '</div>'+
+   '<div class="two"><div class="card"><div class="between"><span class="ttl">Conversations over time</span><span style="font-size:11px;color:var(--fa)">Daily</span></div><div class="bars">'+bars+'</div><div class="axis"><span>May 1</span><span>May 31</span></div></div>'+
+   '<div class="card"><span class="ttl">Channel mix and spend</span><div class="chn">'+ch+'</div></div></div>'+
+   '<div class="two2"><div class="card"><div class="between"><span class="ttl">What your agents did today</span><span class="lnk">Full audit log</span></div><div style="margin-top:6px">'+agh+'</div></div>'+
+   '<div class="card"><div class="between"><span class="ttl">Needs you <span class="badge" style="background:var(--rdS);color:var(--rd)">5</span></span></div><div style="margin-top:6px">'+nyh+'</div></div></div>'+
+  '</div>'));
+}
+
+function rInbox(m){
+  var c=CONV[S.conv];
+  var list="";
+  for(var i=0;i<CONV.length;i++){var k=CONV[i];
+    var sb=k.sess==="open"?'<span class="badge" style="background:var(--grS);color:var(--gr)">Open window</span>'
+      :k.sess==="closed"?'<span class="badge" style="background:var(--pg);color:var(--mu)">Template only</span>'
+      :k.sess==="na"?"":'<span class="badge" style="background:var(--amS);color:var(--am)">'+k.sess+' left</span>';
+    list+='<button class="conv'+(i===S.conv?" on":"")+'" onclick="S.conv='+i+';S.draft=\'\';render()"><div class="t">'+esc(k.n)+'<span class="grow"></span><span style="font-size:10px;color:var(--fa);font-weight:400">'+k.t+'</span></div><div class="p">'+esc(k.p)+'</div><div class="m">'+k.ch+(k.ai?' <span class="badge" style="background:var(--puS);color:var(--pu)">Agent handling</span>':"")+sb+'</div></button>';
+  }
+  var msgs="";
+  for(i=0;i<c.msgs.length;i++){var x=c.msgs[i];
+    msgs+='<div class="bub'+(x[0]?" me":"")+'">'+esc(x[1])+(x[2]?'<div class="tag"><span class="badge" style="background:var(--puS);color:var(--pu)">Sent by agent</span>· '+c.src.length+' sources</div>':"")+'</div>';}
+  var sess=c.sess==="closed"
+    ?'<div class="sess warn"><span>Window closed · free replies not allowed</span><span>Use an approved template to reply</span></div>'
+    :c.sess==="na"?""
+    :c.sess==="open"?'<div class="sess"><span>Window open · 21h 14m left to reply free</span><span>After that, a paid template is required</span></div>'
+    :'<div class="sess warn"><span>Window closing · '+c.sess+' left to reply free</span><span>After that, a paid template is required</span></div>';
+  var srcs="";for(i=0;i<c.src.length;i++) srcs+='<span class="src">'+esc(c.src[i])+'</span>';
+  var acts="";for(i=0;i<c.acts.length;i++) acts+='<div class="tle" style="padding:8px 0"><div><div class="x" style="margin:0">'+esc(c.acts[i][0])+'</div><div class="y">'+esc(c.acts[i][1])+'</div></div></div>';
+  var side=S.tab==="copilot"
+    ?'<span class="ttl">Thread summary</span><div class="note">'+esc(c.sum)+'<div class="meta"><span>Generated just now</span><span>Helpful? ↑ ↓</span></div></div>'+
+     '<span class="ttl">Suggested reply</span><div class="sug"><p>'+esc(c.sug)+'</p><div class="srcs">'+srcs+'</div><div class="crow"><button class="mini pu" onclick="insertReply()">Insert into reply</button><button class="mini" onclick="insertReply()">Edit</button><span class="grow"></span><span style="font-size:9px;color:var(--pu)">Never auto-sends</span></div></div>'+
+     '<span class="ttl">Agent actions in this thread</span><div>'+acts+'</div>'
+    :'<span class="ttl">Contact</span><div class="note"><b>'+esc(c.n)+'</b><br><span style="color:var(--mu)">'+c.ch+'</span></div>'+
+     '<span class="ttl">Conversation</span><div class="note">Channel '+c.ch+'<br>Status Open<br>Assigned to Sneha Iyer<br>Priority Medium</div>'+
+     '<span class="ttl">Notes</span><div class="note">Customer prefers WhatsApp for communication.</div>';
+  m.appendChild($('<div class="ibx">'+
+    '<div class="clist"><div class="chead"><div class="between"><span style="font-size:16px;font-weight:600">Inbox</span><span style="font-size:11px;color:var(--fa)">All channels</span></div><div class="tabs"><span class="tab on">Open 32</span><span class="tab">Agent-handled 18</span></div></div>'+list+'</div>'+
+    '<div class="thread"><div class="thead"><span class="av"></span><span><span style="font-size:14px;font-weight:500">'+esc(c.n)+'</span><br><span style="font-size:10px;color:var(--fa)">'+c.ch+'</span></span><span class="grow"></span><span class="chip">Assign</span><span class="chip">Resolve</span></div>'+
+    '<div class="msgs" id="msgs">'+msgs+'</div>'+sess+
+    '<div class="comp"><textarea id="draft" placeholder="Type a message…">'+esc(S.draft)+'</textarea><div class="crow"><button class="mini pu" onclick="S.tab=\'copilot\';render()">Draft with AI</button><span class="mini">Templates</span><span class="grow"></span><span class="mini">'+c.ch+' ▾</span><button class="cta" onclick="send()">Send</button></div></div></div>'+
+    '<div class="side"><div class="tabs"><button class="tab'+(S.tab==="details"?" on":"")+'" onclick="S.tab=\'details\';render()">Details</button><button class="tab'+(S.tab==="copilot"?" on":"")+'" onclick="S.tab=\'copilot\';render()">Copilot</button></div>'+side+'</div>'+
+  '</div>'));
+  var el=document.getElementById("msgs"); if(el) el.scrollTop=el.scrollHeight;
+}
+function insertReply(){S.draft=CONV[S.conv].sug;render();var d=document.getElementById("draft");if(d){d.focus();}}
+function send(){
+  var d=document.getElementById("draft"); if(!d) return;
+  var v=d.value.trim(); if(!v){d.style.borderBottom="1px solid var(--rd)";return;}
+  CONV[S.conv].msgs.push([1,v,1]); CONV[S.conv].p=v; S.draft=""; render();
+}
+
+function rContacts(m){
+  var c=CONTACTS[S.contact];
+  var rows="";
+  for(var i=0;i<CONTACTS.length;i++){var k=CONTACTS[i];
+    var sb=k.sess==="open"?'<span class="badge" style="background:var(--grS);color:var(--gr)">Open window</span>'
+      :k.sess==="closed"?'<span class="badge" style="background:var(--pg);color:var(--mu)">Template only</span>'
+      :k.sess==="na"?'<span style="color:var(--fa)">—</span>':'<span class="badge" style="background:var(--amS);color:var(--am)">'+k.sess+' left</span>';
+    rows+='<button class="tr'+(i===S.contact?" on":"")+'" onclick="S.contact='+i+';render()"><span class="c1"><span style="font-weight:500">'+esc(k.n)+'</span><div class="sub2">via '+k.via+'</div></span><span class="c2"><span class="badge" style="background:'+(k.seg==="Customer"?"var(--grS);color:var(--gr)":"var(--puS);color:var(--pu)")+'">'+k.seg+'</span></span><span class="c3">'+sb+'</span><span class="c4" style="color:var(--mu)">'+k.act+'</span><span class="c5" style="font-weight:'+(k.val==="—"?"400;color:var(--fa)":"500")+'">'+k.val+'</span></button>';}
+  var tl="";
+  for(i=0;i<c.tl.length;i++){var e=c.tl[i];var col=e[4]==="pu"?"var(--pu)":e[4]==="gr"?"var(--gr)":"var(--mu)";
+    tl+='<div class="tle"><span class="bul" style="background:'+col+';margin-top:5px"></span><div style="flex:1"><span class="k" style="color:'+col+'">'+e[0]+'</span> <span style="font-size:9px;color:var(--fa)">'+e[3]+'</span><div class="x">'+esc(e[1])+'</div>'+(e[2]?'<div class="y">'+esc(e[2])+'</div>':"")+'</div></div>';}
+  var sessBox=c.sess==="open"?'<div class="alert gr"><b>WhatsApp window open · 21h 14m left</b><p>Free-form replies allowed until 7:44 AM tomorrow.</p></div>'
+    :c.sess==="closed"?'<div class="alert am"><b>Window closed</b><p>An approved template is required to message this contact.</p></div>'
+    :c.sess==="na"?"":'<div class="alert am"><b>Window closing · '+c.sess+' left</b><p>After that, an approved template is required.</p></div>';
+  m.appendChild($('<div class="hdr"><h1>Contacts</h1><span class="sub">32,680 total · 2,543 new this month · 28 segments</span><span class="grow"></span><button class="cta">Add contact</button></div>'));
+  m.appendChild($('<div class="split"><div class="pane">'+
+    '<div class="tabs"><span class="tab on">All contacts</span><span class="tab">Leads</span><span class="tab">Customers</span><span class="tab">VIP</span></div>'+
+    '<div class="tbl"><div class="th"><span class="c1">Contact</span><span class="c2">Segment</span><span class="c3">Session</span><span class="c4">Last activity</span><span class="c5">Value</span></div>'+rows+'</div>'+
+    '</div><div class="side"><div><div style="font-size:15px;font-weight:600">'+esc(c.n)+'</div><div style="font-size:11px;color:var(--fa)">'+esc(c.ph)+' · '+c.city+'</div></div>'+sessBox+
+    '<div class="between" style="gap:16px"><span><div style="font-size:10px;color:var(--fa)">Conversations</div><b style="font-size:13px">'+c.conv+'</b></span><span><div style="font-size:10px;color:var(--fa)">Total spent</div><b style="font-size:13px">'+c.val+'</b></span><span><div style="font-size:10px;color:var(--fa)">First contact</div><b style="font-size:13px">'+c.first+'</b></span></div>'+
+    '<span class="ttl">Activity</span><div class="tl">'+tl+'</div></div></div>'));
+}
+
+function rCampaigns(m){
+  var c=CAMPS[S.camp];
+  var rows="";
+  for(var i=0;i<CAMPS.length;i++){var k=CAMPS[i];
+    var sc=k.st==="Running"?"var(--puS);color:var(--pu)":k.st==="Sent"?"var(--grS);color:var(--gr)":k.st==="Draft"?"var(--pg);color:var(--mu)":"var(--amS);color:var(--am)";
+    rows+='<button class="tr'+(i===S.camp?" on":"")+'" onclick="S.camp='+i+';render()"><span class="c1"><span style="font-weight:500">'+esc(k.n)+'</span><div class="sub2">'+k.sub+'</div></span><span class="c2" style="color:var(--mu)">'+k.aud+'</span><span class="c3"><span class="badge" style="background:'+sc+'">'+k.st+'</span></span><span class="c4" style="color:var(--mu)">'+k.del+'</span><span class="c5" style="font-weight:'+(k.sp==="₹0"?"400;color:var(--fa)":"500")+'">'+k.sp+'</span><span class="c6" style="color:var(--mu)">'+k.cpc+'</span></button>';}
+  var fun="";
+  for(i=0;i<c.fun.length;i++){var f=c.fun[i];
+    fun+='<div class="fun"><div class="t"><span style="font-weight:500">'+f[0]+'</span><span style="color:var(--mu)">'+f[1]+'  '+Math.round(f[2]*1000)/10+'%</span></div><div class="b" style="width:'+Math.max(f[2]*100,.5)+'%;background:'+(i===4?"var(--gr)":"var(--pu)")+'"></div>'+(c.drop[i]?'<div class="d">↓ '+c.drop[i]+'</div>':"")+'</div>';}
+  m.appendChild($('<div class="hdr"><h1>Campaigns</h1><span class="sub">56 campaigns · ₹1,84,220 spent this month</span><span class="grow"></span><button class="cta">Create campaign</button></div>'));
+  m.appendChild($('<div class="split"><div class="pane">'+
+    '<div class="tabs"><span class="tab on">All</span><span class="tab">Running</span><span class="tab">Scheduled</span><span class="tab">Drafts</span></div>'+
+    '<div class="tbl"><div class="th"><span class="c1">Campaign</span><span class="c2">Audience</span><span class="c3">Status</span><span class="c4">Delivered</span><span class="c5">Spend</span><span class="c6">Cost / conv.</span></div>'+rows+'</div>'+
+    '</div><div class="side"><div style="font-size:16px;font-weight:600">'+esc(c.n)+'</div>'+
+    '<div class="between" style="gap:16px"><span><div style="font-size:10px;color:var(--fa)">Channel</div><b style="font-size:11px">'+c.ch+'</b></span><span><div style="font-size:10px;color:var(--fa)">Sent</div><b style="font-size:11px">'+c.date+'</b></span><span><div style="font-size:10px;color:var(--fa)">Template</div><b style="font-size:11px">'+c.tpl+'</b></span></div>'+
+    '<div class="alert am"><div class="between"><span style="font-size:11px">Spend</span><b style="font-size:16px">'+c.sp+'</b></div><p>'+esc(c.note)+'</p></div>'+
+    '<span class="ttl">Funnel</span>'+fun+'</div></div>'));
+}
+
+function rBuilder(m){
+  var n=NODES[S.node];
+  var canvas="";
+  for(var i=0;i<NODES.length;i++){var k=NODES[i];
+    if(k.br) canvas+='<div class="wire"></div><div class="blab">'+k.br+'</div><div class="wire"></div>';
+    else if(i>0) canvas+='<div class="wire"></div>';
+    canvas+='<button class="node'+(i===S.node?" on":"")+(k.err&&!S.live?" err":"")+'" onclick="S.node='+i+';render()"><span class="num">'+(i+1)+'</span><span style="flex:1"><span class="k">'+k.k+'</span><div class="t">'+esc(k.t)+'</div><div class="s">'+esc(k.s)+'</div></span>'+(k.err&&!S.live?'<span class="badge" style="background:var(--rdS);color:var(--rd)">!</span>':"")+'</button>';}
+  var nl=[["When",0],["a WhatsApp message arrives",1],["send",0],["a welcome message",1],["and ask",0],["what they need",1],["if they choose",0],["book appointment",1],["ask for",0],["date and time",1],["then if",0],["the clinic is open",1],["send",0],["a confirmation",1]];
+  var nlh="";for(i=0;i<nl.length;i++) nlh+=nl[i][1]?"<b>"+nl[i][0]+"</b>":"<span>"+nl[i][0]+"</span>";
+  var cost=n.cost==="paid"
+    ?'<div class="alert am"><b>Paid template · ₹0.72 per conversation</b><p>About 340 sends a week — roughly ₹245 a week.</p></div>'
+    :'<div class="alert gr"><b>Free — inside the 24-hour window</b><p>This step only runs after the customer messages first.</p></div>';
+  var issue=S.live?'<div class="alert gr"><b>Live</b><p>Running on new WhatsApp conversations. Every agent action is written to the contact timeline.</p></div>'
+    :'<div class="alert rd"><b>Blocking issue in step 6</b><p>Template appointment_conf_v1 is not approved by Meta. Publish stays disabled until it is approved or replaced.</p><button class="mini" style="align-self:flex-start;background:var(--w);border-color:transparent;color:var(--rd);font-weight:500" onclick="S.node=5;render()">Go to step 6</button></div>';
+  var gate=S.tested
+    ?'<div class="note"><b style="color:var(--gr)">Test passed</b><br>6 of 6 steps ran against a sample contact. Nothing was sent.</div>'
+    :'<div class="note"><b>Run a test before publishing</b><br><span style="color:var(--fa)">Nothing sends. You will see what each step decides for a sample contact.</span></div>';
+  var pubStyle=S.tested?'class="cta"':'style="background:var(--pg);color:var(--fa);border-radius:8px;padding:7px 13px;font-size:12px;font-weight:500;cursor:not-allowed"';
+  m.appendChild($('<div class="hdr"><h1 style="font-size:15px">← Appointment booking</h1>'+
+    (S.live?'<span class="badge" style="background:var(--grS);color:var(--gr)">Live</span>':'<span class="badge" style="background:var(--amS);color:var(--am)">Draft</span><span class="badge" style="background:var(--rdS);color:var(--rd)">1 step needs attention</span>')+
+    '<span class="grow"></span><span style="font-size:11px;color:var(--mu)">Est. ₹0.72 × ~340/wk = ₹245/wk</span>'+
+    '<button class="chip" style="border-color:var(--pu);color:var(--pu);font-weight:500" onclick="runTest()">Test flow</button>'+
+    '<button '+pubStyle+' onclick="publish()">'+(S.live?"Pause":"Publish")+'</button></div>'));
+  m.appendChild($('<div class="bwrap"><div class="canvas">'+
+    '<div class="pbar"><input id="pin" placeholder="Describe a change — “also send an SMS if they don\'t reply in 2 hours”"><button class="cta" onclick="applyPrompt()">Apply</button></div>'+
+    '<div class="stage">'+canvas+'</div>'+
+    '<div class="nl">'+nlh+'</div></div>'+
+    '<div class="side"><div style="display:flex;align-items:center;gap:8px"><span class="num" style="background:var(--pg);border-radius:6px;padding:3px 7px;font-size:11px;font-weight:600;color:var(--mu)">'+(S.node+1)+'</span><span class="ttl">'+esc(n.t)+'</span></div>'+
+    '<div><div style="font-size:9px;font-weight:600;color:var(--fa);margin-bottom:6px">CHANNEL</div><div class="tabs"><span class="tab on">'+n.ch+'</span><span class="tab">Email</span><span class="tab">SMS</span></div></div>'+
+    (n.msg?'<div><div style="font-size:9px;font-weight:600;color:var(--fa);margin-bottom:6px">MESSAGE</div><div class="note">'+esc(n.msg)+'</div></div>':"")+
+    cost+issue+gate+'</div></div>'));
+}
+function runTest(){S.tested=true;render();}
+function publish(){
+  if(!S.tested){alert("Run a test first — Publish stays disabled until the flow passes.");return;}
+  S.live=!S.live;render();
+}
+function applyPrompt(){
+  var el=document.getElementById("pin"); var v=el.value.trim();
+  if(!v){el.style.borderColor="var(--rd)";return;}
+  NODES.push({k:"ACTION",t:"Send SMS follow-up",s:"Added from your description · review it",ch:"SMS",msg:"Just checking in — did you still want to book?",cost:"paid",br:"No reply in 2h"});
+  S.node=NODES.length-1;S.tested=false;S.live=false;render();
+}
+render();
+</script>
+</body>
+</html>
