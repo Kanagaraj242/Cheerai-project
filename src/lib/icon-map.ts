@@ -1,0 +1,53 @@
+import {
+  AlertTriangle,
+  Bot,
+  CheckCircle2,
+  Clock,
+  Cog,
+  Filter,
+  GitBranch,
+  Headset,
+  Mail,
+  Pause,
+  Plug,
+  Plus,
+  RefreshCw,
+  Send,
+  Shield,
+  ShoppingCart,
+  Sparkles,
+  Tag,
+  Target,
+  Workflow,
+  Zap,
+  type LucideIcon,
+} from 'lucide-react'
+
+export const ICONS: Record<string, LucideIcon> = {
+  bolt: Zap,
+  robot: Bot,
+  plug: Plug,
+  flow: Workflow,
+  send: Send,
+  chat: Headset,
+  clock: Clock,
+  spark: Sparkles,
+  check: CheckCircle2,
+  warn: AlertTriangle,
+  filter: Filter,
+  plus: Plus,
+  branch: GitBranch,
+  target: Target,
+  cart: ShoppingCart,
+  tag: Tag,
+  shield: Shield,
+  head: Headset,
+  refresh: RefreshCw,
+  mail: Mail,
+  pause: Pause,
+  cog: Cog,
+}
+
+export function getIcon(name: string): LucideIcon {
+  return ICONS[name] ?? Cog
+}

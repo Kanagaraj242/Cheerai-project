@@ -1,0 +1,172 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.75rem;
+
+  --background: #f5f6fb;
+  --foreground: #0f1020;
+
+  --card: #ffffff;
+  --card-foreground: #0f1020;
+  --card-soft: #fafafd;
+
+  --popover: #ffffff;
+  --popover-foreground: #0f1020;
+
+  --primary: #5b34e0;
+  --primary-hover: #4e2bc9;
+  --primary-light: #7c5cf0;
+  --primary-foreground: #ffffff;
+  --primary-soft: #f2eefe;
+  --primary-soft-border: #ded3fb;
+
+  --secondary: #fafafd;
+  --secondary-foreground: #0f1020;
+
+  --muted: #f2f3f8;
+  --muted-foreground: #8b8da6;
+  --muted-foreground-2: #484a60;
+  --muted-foreground-3: #b4b6c8;
+
+  --accent: #f2eefe;
+  --accent-foreground: #5b34e0;
+
+  --destructive: #dc2626;
+  --destructive-soft: #fdecec;
+  --destructive-foreground: #ffffff;
+
+  --success: #0e9f6e;
+  --success-soft: #e6f6f0;
+
+  --warning: #b7791f;
+  --warning-soft: #fdf5e6;
+
+  --info: #2563eb;
+  --info-soft: #eaf1fe;
+
+  --border: #e9eaf2;
+  --border-soft: #f2f3f8;
+  --input: #e9eaf2;
+  --ring: #5b34e0;
+
+  --channel-whatsapp: #1fa855;
+  --channel-instagram: #e1306c;
+  --channel-email: #2563eb;
+  --channel-sms: #f59e0b;
+  --channel-messenger: #0084ff;
+
+  --shadow-card: 0 1px 2px rgba(15, 16, 32, 0.04), 0 8px 24px rgba(15, 16, 32, 0.05);
+  --shadow-card-lg: 0 2px 4px rgba(15, 16, 32, 0.04), 0 16px 44px rgba(15, 16, 32, 0.09);
+}
+
+@theme inline {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-card-soft: var(--card-soft);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-light: var(--primary-light);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-soft-border: var(--primary-soft-border);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted-foreground-2: var(--muted-foreground-2);
+  --color-muted-foreground-3: var(--muted-foreground-3);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-soft: var(--destructive-soft);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+
+  --color-border: var(--border);
+  --color-border-soft: var(--border-soft);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-channel-whatsapp: var(--channel-whatsapp);
+  --color-channel-instagram: var(--channel-instagram);
+  --color-channel-email: var(--channel-email);
+  --color-channel-sms: var(--channel-sms);
+  --color-channel-messenger: var(--channel-messenger);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-card: var(--shadow-card);
+  --shadow-card-lg: var(--shadow-card-lg);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer utilities {
+  .num {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 99px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

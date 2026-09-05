@@ -1,0 +1,96 @@
+import type { WorkflowNodeData } from '@/types'
+
+export const initialWorkflowNodes: WorkflowNodeData[] = [
+  {
+    kind: 'TRIGGER',
+    title: 'Cart abandoned',
+    subtitle: 'Shopify · checkout not completed',
+    tone: 'brand',
+    icon: 'cart',
+    order: 1,
+    config: [
+      ['Source', 'Shopify'],
+      ['Event', 'Checkout abandoned'],
+      ['Minimum cart value', '₹1,200'],
+    ],
+  },
+  {
+    kind: 'CONDITION',
+    title: 'Wait 2 hours, then check',
+    subtitle: 'Skip if the order completed in the meantime',
+    tone: 'warning',
+    icon: 'clock',
+    order: 2,
+    branchLabel: 'if still in cart',
+    config: [
+      ['Delay', '2 hours'],
+      ['Skip if', 'Order placed'],
+      ['Skip if', 'Unsubscribed'],
+    ],
+  },
+  {
+    kind: 'AI AGENT',
+    title: 'Sales Agent writes the message',
+    subtitle: 'Personalised from cart contents and past orders',
+    tone: 'brand',
+    icon: 'robot',
+    order: 3,
+    config: [
+      ['Agent', 'Sales Agent'],
+      ['Tone', 'Warm, concise'],
+      ['Must include', 'Cart items, discount if eligible'],
+    ],
+  },
+  {
+    kind: 'CONNECTOR',
+    title: 'WhatsApp Business',
+    subtitle: 'Template cart_recover_v3 · approved',
+    tone: 'success',
+    icon: 'plug',
+    order: 4,
+    config: [
+      ['Connector', 'WhatsApp Business API'],
+      ['Template', 'cart_recover_v3'],
+      ['Cost', '₹0.72 per conversation'],
+    ],
+  },
+  {
+    kind: 'ACTION',
+    title: 'Send the message',
+    subtitle: 'Personalised WhatsApp message with cart link',
+    tone: 'success',
+    icon: 'send',
+    order: 5,
+    config: [
+      ['Channel', 'WhatsApp'],
+      ['Attach', 'Cart deep link'],
+      ['Track', 'Click and conversion'],
+    ],
+  },
+  {
+    kind: 'DELAY',
+    title: 'Wait 24 hours',
+    subtitle: 'Give them time to come back',
+    tone: 'neutral',
+    icon: 'clock',
+    order: 6,
+    config: [
+      ['Delay', '24 hours'],
+      ['Business hours only', 'No'],
+    ],
+  },
+  {
+    kind: 'FOLLOW-UP',
+    title: 'Send SMS if still unpurchased',
+    subtitle: 'Falls back to SMS once the WhatsApp window closes',
+    tone: 'warning',
+    icon: 'refresh',
+    order: 7,
+    branchLabel: 'if no purchase after 24h',
+    config: [
+      ['Channel', 'SMS'],
+      ['Condition', 'No purchase yet'],
+      ['Cost', '₹0.20 per message'],
+    ],
+  },
+]
