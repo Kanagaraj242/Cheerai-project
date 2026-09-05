@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cheerio AI — Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F6FB; --sf:#FFFFFF; --sf2:#FAFAFD;
+  --ln:#E9EAF2; --ln2:#F2F3F8;
+  --ink:#0F1020; --ink2:#484A60; --ink3:#8B8DA6; --ink4:#B4B6C8;
+  --br:#5B34E0; --br2:#7C5CF0; --brS:#F2EEFE; --brL:#DED3FB;
+  --ok:#0E9F6E; --okS:#E6F6F0; --warn:#B7791F; --warnS:#FDF5E6;
+  --dg:#DC2626; --dgS:#FDECEC; --info:#2563EB; --infoS:#EAF1FE;
+  --wa:#1FA855; --ig:#E1306C; --em:#2563EB; --sm:#F59E0B; --ms:#0084FF;
+  --r1:8px; --r2:12px; --r3:16px;
+  --sh:0 1px 2px rgba(15,16,32,.04),0 8px 24px rgba(15,16,32,.05);
+  --shL:0 2px 4px rgba(15,16,32,.04),0 16px 44px rgba(15,16,32,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:Inter,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);
+  -webkit-font-smoothing:antialiased;font-size:13.5px;line-height:1.5}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input,textarea{font:inherit;color:inherit;outline:none;border:none;background:none}
+svg{flex:none}
+:focus-visible{outline:2px solid var(--br);outline-offset:2px;border-radius:4px}
+.hide{display:none!important}
+.gr{flex:1}
+.row{display:flex;align-items:center}
+.row.g6{gap:6px}.row.g8{gap:8px}.row.g10{gap:10px}.row.g12{gap:12px}.row.g16{gap:16px}
+.col{display:flex;flex-direction:column}
+.btw{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+/* ---------- shell ---------- */
+#app{display:flex;min-height:100vh}
+.side{width:248px;flex:none;background:var(--sf);border-right:1px solid var(--ln);
+  display:flex;flex-direction:column;padding:18px 14px 14px;gap:1px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:11px;padding:2px 8px 20px}
+.brand .mk{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#8A6BF5,#5B34E0);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:19px;font-weight:700;line-height:1}
+.brand b{font-size:19px;font-weight:700;color:var(--br);letter-spacing:-.025em}
+.sec{font-size:10px;font-weight:600;color:var(--ink4);letter-spacing:.1em;padding:18px 10px 7px}
+.nv{display:flex;align-items:center;gap:12px;padding:9.5px 11px;border-radius:10px;
+  font-size:13.5px;color:var(--ink2);width:100%;text-align:left;line-height:1}
+.nv svg{width:18px;height:18px;fill:none;stroke:var(--ink3);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.nv .lb{flex:1}
+.nv .ct{background:var(--brS);color:var(--br);font-size:11px;font-weight:600;border-radius:99px;padding:1.5px 7px}
+.nv:hover{background:var(--sf2)}
+.nv.on{background:var(--brS);color:var(--br);font-weight:600}
+.nv.on svg{stroke:var(--br)}
+.plan{margin-top:auto;border:1px solid var(--ln);border-radius:var(--r2);padding:12px 13px;display:flex;flex-direction:column;gap:8px}
+.plan .tk{height:5px;border-radius:99px;background:var(--ln2);overflow:hidden}
+.plan .tk i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#7C5CF0,#5B34E0)}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{height:68px;flex:none;background:rgba(255,255,255,.86);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:14px;padding:0 28px;position:sticky;top:0;z-index:20}
+.top h1{font-size:19px;font-weight:650;letter-spacing:-.02em}
+.top .sb{font-size:12.5px;color:var(--ink3);margin-top:1px}
+.srch{display:flex;align-items:center;gap:9px;background:var(--sf2);border:1px solid var(--ln);
+  border-radius:10px;padding:8px 12px;width:260px;color:var(--ink3);font-size:12.5px}
+.srch svg{width:15px;height:15px;fill:none;stroke:var(--ink3);stroke-width:1.9}
+.ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative}
+.ico:hover{background:var(--sf2)}
+.ico svg{width:18px;height:18px;fill:none;stroke:var(--ink2);stroke-width:1.7;stroke-linecap:round}
+.ico .dot{position:absolute;top:6px;right:6px;min-width:15px;height:15px;border-radius:99px;background:var(--dg);
+  color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--sf)}
+.me{display:flex;align-items:center;gap:9px;padding:5px 8px 5px 5px;border-radius:10px}
+.me:hover{background:var(--sf2)}
+.av{border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:600;background:linear-gradient(135deg,#8A6BF5,#5B34E0)}
+.wrap{padding:24px 28px 40px;display:flex;flex-direction:column;gap:18px;max-width:1440px;width:100%}
+
+/* ---------- primitives ---------- */
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:var(--r3);box-shadow:var(--sh)}
+.pad{padding:18px 20px}
+.hd{padding:16px 20px;border-bottom:1px solid var(--ln2);display:flex;align-items:center;gap:10px}
+.hd h3{font-size:14.5px;font-weight:600;letter-spacing:-.01em}
+.hd .s{font-size:12px;color:var(--ink3);margin-top:2px}
+.eyebrow{font-size:10.5px;font-weight:600;letter-spacing:.09em;color:var(--ink4)}
+.h2{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.mut{color:var(--ink3)}
+.sm{font-size:12px}.xs{font-size:11px}
+.btn{display:inline-flex;align-items:center;gap:7px;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:550;
+  border:1px solid var(--ln);background:var(--sf);color:var(--ink2);white-space:nowrap;transition:.14s}
+.btn:hover{background:var(--sf2);border-color:#DCDDE9}
+.btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.btn.pri{background:var(--br);border-color:var(--br);color:#fff;box-shadow:0 1px 2px rgba(91,52,224,.28)}
+.btn.pri:hover{background:#4E2BC9;border-color:#4E2BC9}
+.btn.gho{border-color:transparent;background:transparent}
+.btn.gho:hover{background:var(--sf2)}
+.btn.sm2{padding:6.5px 11px;font-size:12px;border-radius:9px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:550;padding:3px 8px;border-radius:7px;white-space:nowrap}
+.t-ok{background:var(--okS);color:var(--ok)}
+.t-br{background:var(--brS);color:var(--br)}
+.t-wn{background:var(--warnS);color:var(--warn)}
+.t-dg{background:var(--dgS);color:var(--dg)}
+.t-in{background:var(--infoS);color:var(--info)}
+.t-nt{background:var(--ln2);color:var(--ink3)}
+.pip{width:6px;height:6px;border-radius:50%;flex:none}
+.tabs{display:flex;gap:4px;background:var(--sf2);border:1px solid var(--ln);border-radius:11px;padding:3px}
+.tab{padding:6.5px 13px;border-radius:8px;font-size:12.5px;font-weight:500;color:var(--ink3)}
+.tab.on{background:var(--sf);color:var(--ink);box-shadow:0 1px 2px rgba(15,16,32,.07);font-weight:600}
+.chipf{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--ln);background:var(--sf);
+  border-radius:9px;padding:7px 11px;font-size:12.5px;color:var(--ink2)}
+.chipf svg{width:13px;height:13px;fill:none;stroke:var(--ink3);stroke-width:2}
+
+/* stat cards */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{background:var(--sf);border:1px solid var(--ln);border-radius:var(--r3);padding:16px 18px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.stat .lb{font-size:12px;color:var(--ink3);font-weight:500}
+.stat .vl{font-size:26px;font-weight:650;letter-spacing:-.03em;margin:7px 0 5px}
+.stat .dl{font-size:11.5px;display:flex;align-items:center;gap:5px}
+.stat .ic{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center}
+.stat .ic svg{width:16px;height:16px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.up{color:var(--ok)}.dn{color:var(--dg)}
+
+/* meter */
+.mtr{height:7px;border-radius:99px;background:var(--ln2);overflow:hidden;display:flex}
+.mtr i{display:block;height:100%}
+.rail{height:8px;border-radius:99px;background:var(--ln2);overflow:hidden}
+.rail i{display:block;height:100%;border-radius:99px;background:var(--br)}
+
+/* table */
+.tb{width:100%;border-collapse:collapse}
+.tb th{font-size:11px;font-weight:600;color:var(--ink3);text-align:left;padding:11px 16px;
+  background:var(--sf2);border-bottom:1px solid var(--ln);letter-spacing:.02em;white-space:nowrap}
+.tb td{padding:13px 16px;border-bottom:1px solid var(--ln2);font-size:13px;vertical-align:middle}
+.tb tr:last-child td{border-bottom:none}
+.tb tbody tr{cursor:pointer}
+.tb tbody tr:hover{background:var(--sf2)}
+.tb tbody tr.on{background:var(--brS)}
+.tb .nm{font-weight:550}
+.tb .s2{font-size:11.5px;color:var(--ink3);margin-top:2px}
+
+/* charts */
+.spark{display:flex;align-items:flex-end;gap:3px;height:56px}
+.spark i{flex:1;border-radius:3px 3px 0 0;background:var(--brL)}
+.spark i.hi{background:var(--br)}
+.bars{display:flex;align-items:flex-end;gap:6px;height:150px}
+.bars .b{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:3px;height:100%}
+.bars .b i{border-radius:4px 4px 0 0;display:block}
+.axis{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink4);margin-top:9px}
+.leg{display:flex;flex-wrap:wrap;gap:14px;font-size:11.5px;color:var(--ink2)}
+.leg span{display:flex;align-items:center;gap:6px}
+.ring{transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-linecap:round}
+
+/* avatar sizes */
+.a28{width:28px;height:28px;font-size:10.5px}
+.a32{width:32px;height:32px;font-size:11.5px}
+.a36{width:36px;height:36px;font-size:12.5px}
+.a44{width:44px;height:44px;font-size:15px}
+.a56{width:56px;height:56px;font-size:19px}
+.ch{position:absolute;right:-2px;bottom:-2px;width:13px;height:13px;border-radius:50%;border:2px solid var(--sf)}
+.avw{position:relative;flex:none}
+
+/* ---------- AI command bar ---------- */
+.aibar{background:linear-gradient(112deg,#F4F0FE 0%,#EFEBFD 45%,#F3F6FE 100%);
+  border:1px solid var(--brL);border-radius:var(--r3);padding:20px 22px;display:flex;flex-direction:column;gap:14px}
+.aibar .ttl{font-size:16.5px;font-weight:650;letter-spacing:-.02em}
+.aibar .fld{display:flex;align-items:center;gap:10px;background:var(--sf);border:1px solid var(--brL);
+  border-radius:12px;padding:6px 6px 6px 14px;box-shadow:0 1px 2px rgba(91,52,224,.06)}
+.aibar .fld input{flex:1;font-size:13.5px;padding:9px 0}
+.aibar .fld input::placeholder{color:var(--ink4)}
+.sugs{display:flex;flex-wrap:wrap;gap:8px}
+.sug{background:rgba(255,255,255,.82);border:1px solid var(--brL);border-radius:99px;padding:6px 12px;
+  font-size:12px;color:var(--br);font-weight:500}
+.sug:hover{background:#fff}
+.spark2{width:16px;height:16px;fill:none;stroke:var(--br);stroke-width:1.7;stroke-linejoin:round}
+
+/* ---------- recommendations ---------- */
+.rec{display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid var(--ln2)}
+.rec:last-child{border-bottom:none}
+.rec .ic{width:30px;height:30px;border-radius:9px;flex:none;display:flex;align-items:center;justify-content:center;
+  background:var(--brS)}
+.rec .ic svg{width:15px;height:15px;fill:none;stroke:var(--br);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.rec .bd{flex:1;min-width:0}
+.rec .t{font-size:13px;font-weight:550}
+.rec .d{font-size:12px;color:var(--ink3);margin-top:3px;line-height:1.5}
+
+/* ---------- activity feed ---------- */
+.feed{display:flex;flex-direction:column}
+.fe{display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid var(--ln2)}
+.fe:last-child{border-bottom:none}
+.fe .dt{width:8px;height:8px;border-radius:50%;margin-top:6px;flex:none}
+.fe .t{font-size:12.8px;line-height:1.5}
+.fe .m{font-size:11px;color:var(--ink4);margin-top:3px}
+
+/* ---------- inbox ---------- */
+.ibx{display:flex;flex:1;min-height:0;background:var(--sf)}
+.ilist{width:330px;flex:none;border-right:1px solid var(--ln);display:flex;flex-direction:column;min-height:0}
+.ihd{padding:14px 16px;border-bottom:1px solid var(--ln);display:flex;flex-direction:column;gap:11px}
+.iscroll{overflow-y:auto;flex:1}
+.cv{display:block;width:100%;text-align:left;padding:13px 16px;border-bottom:1px solid var(--ln2);position:relative}
+.cv:hover{background:var(--sf2)}
+.cv.on{background:var(--brS)}
+.cv.on:after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--br)}
+.cv .n{font-size:13px;font-weight:600}
+.cv .p{font-size:12px;color:var(--ink3);margin:4px 0 7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.thr{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--bg);min-height:0}
+.thd{background:var(--sf);border-bottom:1px solid var(--ln);padding:12px 20px;display:flex;align-items:center;gap:11px}
+.msgs{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:12px}
+.day{align-self:center;background:var(--sf);border:1px solid var(--ln);border-radius:99px;
+  padding:3px 12px;font-size:11px;color:var(--ink3);margin-bottom:2px}
+.bub{max-width:62%;padding:11px 14px;border-radius:14px;font-size:13px;line-height:1.55;position:relative;width:fit-content}
+.bub.them{background:var(--sf);border:1px solid var(--ln);border-bottom-left-radius:5px;align-self:flex-start}
+.bub.us{background:#E9FBF1;border:1px solid #CDEEDC;border-bottom-right-radius:5px;align-self:flex-end}
+.bub .tm{font-size:10px;color:var(--ink4);margin-top:6px;display:flex;align-items:center;gap:5px;justify-content:flex-end}
+.bub .who{position:absolute;top:-9px;left:12px;background:var(--brS);color:var(--br);font-size:9.5px;font-weight:600;
+  padding:2px 7px;border-radius:99px;border:1px solid var(--brL)}
+.bub.us .who{left:auto;right:12px}
+.sesbar{padding:9px 20px;font-size:12px;font-weight:500;display:flex;justify-content:space-between;gap:10px}
+.comp{background:var(--sf);border-top:1px solid var(--ln);padding:12px 20px 14px;display:flex;flex-direction:column;gap:10px}
+.comp textarea{resize:none;min-height:42px;font-size:13px;width:100%}
+.ipanel{width:340px;flex:none;border-left:1px solid var(--ln);background:var(--sf);overflow-y:auto;display:flex;flex-direction:column}
+.ptab{display:flex;border-bottom:1px solid var(--ln);padding:0 14px;gap:2px}
+.ptab button{padding:13px 12px 11px;font-size:12.5px;color:var(--ink3);border-bottom:2px solid transparent;font-weight:500}
+.ptab button.on{color:var(--br);border-bottom-color:var(--br);font-weight:600}
+.pbody{padding:16px 18px;display:flex;flex-direction:column;gap:16px}
+.kv{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;padding:6px 0}
+.kv .k{color:var(--ink3)}
+.kv .v{font-weight:500;text-align:right}
+.aisug{background:linear-gradient(120deg,#F4F0FE,#F0F4FE);border:1px solid var(--brL);border-radius:var(--r2);
+  padding:13px 14px;display:flex;flex-direction:column;gap:10px}
+.srcs{display:flex;flex-wrap:wrap;gap:6px}
+.srcs .s{background:rgba(255,255,255,.9);border:1px solid var(--brL);color:var(--br);
+  font-size:10.5px;font-weight:550;padding:3px 8px;border-radius:6px}
+
+/* ---------- contacts ---------- */
+.cpanel{width:352px;flex:none;border-left:1px solid var(--ln);background:var(--sf);overflow-y:auto}
+.tline{display:flex;flex-direction:column}
+.tli{display:flex;gap:12px;padding:13px 0;border-top:1px solid var(--ln2)}
+.tli:first-child{border-top:none}
+.tli .rail2{width:8px;flex:none;display:flex;flex-direction:column;align-items:center}
+.tli .rail2 i{width:8px;height:8px;border-radius:50%;flex:none;margin-top:4px}
+.tli .rail2 u{flex:1;width:1px;background:var(--ln);margin-top:5px}
+.tli .k{font-size:9.5px;font-weight:650;letter-spacing:.06em}
+.tli .t{font-size:12.7px;line-height:1.5;margin-top:3px}
+.tli .m{font-size:11px;color:var(--ink4);margin-top:2px}
+
+/* ---------- workflow builder ---------- */
+.bwrap{display:flex;flex:1;min-height:0}
+.bcv{flex:1;min-width:0;display:flex;flex-direction:column;background:
+  radial-gradient(circle at 1px 1px,#DEDFEC 1px,transparent 0) 0 0/22px 22px,var(--bg)}
+.bprompt{background:var(--sf);border-bottom:1px solid var(--ln);padding:14px 24px;display:flex;flex-direction:column;gap:11px}
+.bstage{flex:1;overflow-y:auto;padding:26px 24px 30px;display:flex;flex-direction:column;align-items:center}
+.nd{width:470px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:13px 15px;
+  display:flex;gap:12px;align-items:flex-start;text-align:left;box-shadow:var(--sh);transition:.14s;position:relative}
+.nd:hover{border-color:var(--brL);box-shadow:var(--shL)}
+.nd.on{border-color:var(--br);box-shadow:0 0 0 3px rgba(91,52,224,.12),var(--sh)}
+.nd.new{border-color:var(--br);background:linear-gradient(120deg,#FBFAFF,#F7F4FE)}
+.nd .ni{width:34px;height:34px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center}
+.nd .ni svg{width:17px;height:17px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nd .nk{font-size:9.5px;font-weight:650;letter-spacing:.07em}
+.nd .nt{font-size:13.5px;font-weight:600;margin-top:3px;letter-spacing:-.01em}
+.nd .ns{font-size:12px;color:var(--ink3);margin-top:3px;line-height:1.5}
+.nd .no{position:absolute;top:11px;right:12px;font-size:10px;color:var(--ink4);font-weight:600}
+.wire{width:2px;height:16px;background:var(--ln);position:relative}
+.wire.dash{background:repeating-linear-gradient(180deg,var(--ln) 0 4px,transparent 4px 8px)}
+.blab{background:var(--sf);border:1px solid var(--ln);border-radius:99px;padding:3px 11px;font-size:11px;
+  color:var(--ink2);font-weight:500;box-shadow:0 1px 2px rgba(15,16,32,.05)}
+.addn{width:28px;height:28px;border-radius:50%;border:1px dashed var(--ink4);color:var(--ink3);
+  display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--sf)}
+.addn:hover{border-color:var(--br);color:var(--br);border-style:solid}
+.nlbar{background:var(--sf);border-top:1px solid var(--ln);padding:13px 24px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.nlbar span{font-size:12.5px;color:var(--ink3)}
+.nlbar b{font-size:12.5px;font-weight:600;color:var(--br);background:var(--brS);border:1px solid var(--brL);
+  padding:3px 9px;border-radius:7px}
+.bside{width:360px;flex:none;border-left:1px solid var(--ln);background:var(--sf);overflow-y:auto;padding:18px}
+.fldg{display:flex;flex-direction:column;gap:7px}
+.fldg label{font-size:11px;font-weight:600;color:var(--ink3);letter-spacing:.03em}
+.inp{border:1px solid var(--ln);border-radius:10px;padding:10px 12px;font-size:13px;background:var(--sf)}
+.inp:focus-within{border-color:var(--br)}
+.seg{display:flex;gap:5px;background:var(--sf2);border:1px solid var(--ln);border-radius:10px;padding:3px}
+.seg button{flex:1;padding:7px;border-radius:7px;font-size:12px;color:var(--ink3);font-weight:500}
+.seg button.on{background:var(--sf);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(15,16,32,.07)}
+.note{background:var(--sf2);border:1px solid var(--ln);border-radius:10px;padding:11px 13px;font-size:12.5px;line-height:1.55}
+.alert{border-radius:10px;padding:11px 13px;display:flex;flex-direction:column;gap:5px;font-size:12px;line-height:1.5}
+.alert b{font-size:12.5px;font-weight:600}
+
+/* ---------- connectors & agents ---------- */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.cn{background:var(--sf);border:1px solid var(--ln);border-radius:var(--r3);padding:16px 18px;
+  box-shadow:var(--sh);display:flex;flex-direction:column;gap:12px;transition:.14s}
+.cn:hover{box-shadow:var(--shL)}
+.cn .lg{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:700;color:#fff;flex:none}
+.cn .nm{font-size:14px;font-weight:600;letter-spacing:-.01em}
+.cn .ct{font-size:11.5px;color:var(--ink3);margin-top:2px}
+.cn .ds{font-size:12.3px;color:var(--ink2);line-height:1.55}
+.perm{display:flex;flex-wrap:wrap;gap:5px}
+.perm span{font-size:10.5px;background:var(--sf2);border:1px solid var(--ln);color:var(--ink3);
+  padding:3px 7px;border-radius:6px}
+.agent{background:var(--sf);border:1px solid var(--ln);border-radius:var(--r3);box-shadow:var(--sh);overflow:hidden}
+.agent .top2{padding:18px 20px;display:flex;gap:14px;align-items:flex-start;
+  background:linear-gradient(120deg,#FAF8FF,#FFFFFF)}
+.agent .fig{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex:none}
+.agent .fig svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.agent .met{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ln2)}
+.agent .met div{padding:13px 16px;border-right:1px solid var(--ln2)}
+.agent .met div:last-child{border-right:none}
+.agent .met .v{font-size:17px;font-weight:650;letter-spacing:-.02em;margin-top:3px}
+.tog{width:38px;height:22px;border-radius:99px;background:var(--ln);position:relative;flex:none;transition:.18s}
+.tog i{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.18s}
+.tog.on{background:var(--ok)}
+.tog.on i{left:19px}
+
+@media(max-width:1280px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .grid3{grid-template-columns:repeat(2,1fr)}
+  .ipanel,.cpanel,.bside{width:300px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+
+/* ================= LOGIN ================= */
+#signin{font-family:'Plus Jakarta Sans',system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:28px;}
+
+#signin .shell{
+  width:100%;max-width:1500px;background:var(--sf);
+  border:1px solid var(--ln);border-radius:22px;overflow:hidden;
+  display:grid;grid-template-columns:53fr 47fr;min-height:82vh;
+}
+#signin /* ============ LEFT ============ */
+.left{
+  background:linear-gradient(160deg,var(--lav1) 0%,var(--lav2) 100%);
+  padding:52px 56px;display:flex;flex-direction:column;gap:30px;
+}
+#signin .logo{display:flex;align-items:center;gap:13px}
+#signin .mark{
+  width:40px;height:40px;border-radius:12px;flex:none;
+  background:linear-gradient(135deg,#7C5CF0,#5B34E0);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:24px;font-weight:700;line-height:1;
+}
+#signin .logo b{font-size:29px;font-weight:700;letter-spacing:-.02em}
+#signin .headline{font-size:41px;font-weight:600;line-height:1.24;letter-spacing:-.025em;max-width:13ch}
+#signin .blurb{font-size:17px;line-height:1.62;color:var(--mu);max-width:44ch}
+#signin /* app mockup */
+.mock{
+  background:var(--sf);border-radius:16px;overflow:hidden;
+  box-shadow:0 22px 50px rgba(51,32,120,.14),0 3px 10px rgba(51,32,120,.06);
+  display:grid;grid-template-columns:56px 1fr 1.15fr;height:300px;
+}
+#signin .rail{background:#26262E;padding:14px 0;display:flex;flex-direction:column;align-items:center;gap:14px}
+#signin .rail .tl{display:flex;gap:5px;margin-bottom:6px}
+#signin .rail .tl i{width:8px;height:8px;border-radius:50%;display:block}
+#signin .ric{width:28px;height:28px;border-radius:8px;background:#3A3A45;display:flex;align-items:center;justify-content:center}
+#signin .ric.on{background:var(--br)}
+#signin .ric svg{width:14px;height:14px;fill:none;stroke:#B9B9C6;stroke-width:1.8}
+#signin .ric.on svg{stroke:#fff}
+#signin .rail .me{margin-top:auto;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#F0997B,#D85A30)}
+#signin .mlist{border-right:1px solid #EFEDF5;display:flex;flex-direction:column}
+#signin .mlist h4{font-size:14px;font-weight:700;padding:14px 14px 10px}
+#signin .mrow{display:flex;gap:9px;padding:9px 14px;border-bottom:1px solid #F4F2F9;align-items:flex-start}
+#signin .mrow.on{background:#F7F5FF}
+#signin .avt{width:26px;height:26px;border-radius:50%;flex:none;position:relative;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:600}
+#signin .avt b{position:absolute;right:-2px;bottom:-2px;width:11px;height:11px;border-radius:50%;border:1.5px solid #fff}
+#signin .mrow .tx{min-width:0;flex:1}
+#signin .mrow .n{font-size:10.5px;font-weight:600;display:flex;align-items:center;gap:6px}
+#signin .mrow .n em{margin-left:auto;font-style:normal;font-size:8.5px;font-weight:400;color:var(--fa)}
+#signin .mrow .p{font-size:9.5px;color:var(--fa);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#signin .unread{background:#22C55E;color:#fff;font-size:8px;font-weight:700;border-radius:99px;padding:1px 5px;flex:none}
+#signin .mchat{display:flex;flex-direction:column}
+#signin .mchead{display:flex;align-items:center;gap:9px;padding:12px 14px;border-bottom:1px solid #F4F2F9}
+#signin .mchead .nm{font-size:11px;font-weight:700}
+#signin .mchead .ch{font-size:8.5px;color:#22C55E;font-weight:600}
+#signin .mchead .dots{margin-left:auto;color:var(--fa);font-size:13px;letter-spacing:1px}
+#signin .mbody{padding:14px;display:flex;flex-direction:column;gap:10px}
+#signin .mb{max-width:74%;padding:9px 11px;border-radius:11px;font-size:10.5px;line-height:1.5}
+#signin .mb.them{background:#F3F2F8;color:#2A2A36;border-bottom-left-radius:3px}
+#signin .mb.us{background:var(--br);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+#signin .mb .ts{display:block;font-size:8px;margin-top:4px;opacity:.62;text-align:right}
+#signin .typing{background:#F3F2F8;border-radius:11px;padding:9px 12px;display:flex;gap:4px;width:fit-content}
+#signin .typing i{width:6px;height:6px;border-radius:50%;background:#C3C0D2;display:block;animation:bob 1.3s infinite}
+#signin .typing i:nth-child(2){animation-delay:.18s}
+#signin .typing i:nth-child(3){animation-delay:.36s}
+@keyframes bob{0%,60%,100%{opacity:.4}30%{opacity:1}}
+#signin .trust{font-size:13.5px;color:var(--fa);margin-top:auto}
+#signin .logos{display:flex;align-items:center;gap:34px;flex-wrap:wrap;color:#9C99AE}
+#signin .logos span{font-size:19px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+#signin .logos .l2{font-weight:500;letter-spacing:.16em;font-size:16px}
+#signin .logos .l3{font-style:italic;font-family:Georgia,serif;font-size:17px}
+#signin /* ============ RIGHT ============ */
+.right{padding:52px 92px;display:flex;flex-direction:column;justify-content:center;gap:0}
+#signin .rin{width:100%;max-width:500px;margin:0 auto}
+#signin .wb{font-size:37px;font-weight:700;letter-spacing:-.025em;text-align:center}
+#signin .sub{font-size:16px;color:var(--mu);text-align:center;margin-top:9px}
+#signin .form{margin-top:36px;display:flex;flex-direction:column;gap:20px}
+#signin label{font-size:14.5px;font-weight:600;display:block;margin-bottom:9px}
+#signin .inp{position:relative}
+#signin .inp input{
+  width:100%;border:1.5px solid var(--ln);border-radius:11px;
+  padding:16px 18px;font-size:15px;color:var(--ink);background:var(--sf);
+  transition:border-color .15s;
+}
+#signin .inp input::placeholder{color:#A9A7BA}
+#signin .inp input:focus{border-color:var(--br)}
+#signin .inp.bad input{border-color:#E24B4A}
+#signin .eye{position:absolute;right:16px;top:50%;transform:translateY(-50%);display:flex;padding:4px}
+#signin .eye svg{width:19px;height:19px;fill:none;stroke:#9C99AE;stroke-width:1.7}
+#signin .msg{font-size:13px;color:#D93A39;margin-top:8px;display:none}
+#signin .msg.show{display:block}
+#signin .opts{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#signin .rem{display:flex;align-items:center;gap:10px;font-size:14.5px;color:var(--ink)}
+#signin .box{width:21px;height:21px;border-radius:6px;border:1.5px solid #C9C6D8;background:var(--sf);display:flex;align-items:center;justify-content:center;flex:none}
+#signin .box.on{background:var(--br);border-color:var(--br)}
+#signin .box svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:2.6;opacity:0}
+#signin .box.on svg{opacity:1}
+#signin .forgot{font-size:14.5px;font-weight:600;color:var(--br)}
+#signin .signin{
+  width:100%;background:var(--br);color:#fff;border-radius:11px;
+  padding:18px;font-size:16.5px;font-weight:700;letter-spacing:-.01em;
+  transition:background .15s;
+}
+#signin .signin:hover{background:#4E2BC9}
+#signin .signin:active{transform:translateY(1px)}
+#signin .signin[disabled]{opacity:.65;cursor:default}
+#signin .div{display:flex;align-items:center;gap:16px;margin:4px 0}
+#signin .div hr{flex:1;border:none;border-top:1px solid var(--ln)}
+#signin .div span{font-size:14px;color:var(--mu)}
+#signin .sso{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+#signin .sso button{
+  border:1.5px solid var(--ln);border-radius:11px;padding:15px;
+  font-size:14.5px;font-weight:600;color:var(--ink);
+  display:flex;align-items:center;justify-content:center;gap:11px;
+  transition:border-color .15s,background .15s;
+}
+#signin .sso button:hover{border-color:#CFCBE2;background:#FBFAFE}
+#signin .sso svg{width:19px;height:19px;flex:none}
+#signin .foot{text-align:center;font-size:15px;color:var(--mu);margin-top:30px}
+#signin .foot b{color:var(--br);font-weight:700;cursor:pointer}
+#signin .done{
+  margin-top:20px;background:#E9F7EE;color:#127C3C;
+  border-radius:11px;padding:14px 16px;font-size:14px;font-weight:500;
+  text-align:center;display:none;
+}
+#signin .done.show{display:block}
+
+@media(max-width:1180px){
+#signin .shell{grid-template-columns:1fr}
+#signin .left{display:none}
+#signin .right{padding:52px 32px}
+}
+@media(max-width:560px){
+#signin .shell{border:none;border-radius:0;min-height:100vh}
+#signin .right{padding:40px 22px}
+#signin .wb{font-size:29px}
+#signin .sso{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){}
+
+
+
+#signin .shell{max-width:none;border:none;border-radius:0;min-height:100vh}
+</style>
+</head>
+<body>
+<div id="signin">
+<div class="shell">
+
+  <!-- ---------------- left ---------------- -->
+  <section class="left">
+    <div class="logo"><span class="mark">C</span><b>Cheerio</b></div>
+
+    <h1 class="headline">AI-powered customer engagement platform</h1>
+    <p class="blurb">Automate conversations. Delight customers. Grow your business on every channel.</p>
+
+    <div class="mock">
+      <div class="rail">
+        <div class="tl"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i></div>
+        <span class="ric on"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"/></svg></span>
+        <span class="ric"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11a3 3 0 1 0 0-6"/></svg></span>
+        <span class="ric"><svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></span>
+        <span class="ric"><svg viewBox="0 0 24 24"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><circle cx="12" cy="6" r="2"/><path d="M12 8v3M6 16v-2h12v2"/></svg></span>
+        <span class="ric"><svg viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 5v3M9 13h.01M15 13h.01"/></svg></span>
+        <span class="ric"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg></span>
+        <span class="me"></span>
+      </div>
+
+      <div class="mlist">
+        <h4>Inbox</h4>
+        <div class="mrow on">
+          <span class="avt" style="background:#7C5CF0">RS<b style="background:#25D366"></b></span>
+          <span class="tx"><span class="n">Rahul Sharma<em>10:30 AM</em></span><span class="p">Hi, I need help with my order</span></span>
+          <span class="unread">2</span>
+        </div>
+        <div class="mrow">
+          <span class="avt" style="background:#D4537E">PP<b style="background:#E1306C"></b></span>
+          <span class="tx"><span class="n">Priya Patel<em>10:28 AM</em></span><span class="p">When will my order arrive?</span></span>
+        </div>
+        <div class="mrow">
+          <span class="avt" style="background:#378ADD">AV<b style="background:#0084FF"></b></span>
+          <span class="tx"><span class="n">Amit Verma<em>10:25 AM</em></span><span class="p">Thanks! That helped</span></span>
+        </div>
+        <div class="mrow">
+          <span class="avt" style="background:#1D9E75">NS<b style="background:#8E8EA0"></b></span>
+          <span class="tx"><span class="n">Neha Singh<em>10:20 AM</em></span><span class="p">I want to return a product</span></span>
+        </div>
+        <div class="mrow">
+          <span class="avt" style="background:#BA7517">KM<b style="background:#8E8EA0"></b></span>
+          <span class="tx"><span class="n">Karan Mehta<em>10:18 AM</em></span><span class="p">Do you have this in red?</span></span>
+        </div>
+      </div>
+
+      <div class="mchat">
+        <div class="mchead">
+          <span class="avt" style="background:#7C5CF0;width:28px;height:28px;font-size:10px">RS</span>
+          <span><span class="nm">Rahul Sharma</span><br><span class="ch">● WhatsApp</span></span>
+          <span class="dots">•••</span>
+        </div>
+        <div class="mbody">
+          <div class="mb them">Hi, I need help with my order<span class="ts">10:30 AM</span></div>
+          <div class="mb us">Hello Rahul! 👋 How can I help you today?<span class="ts">10:30 AM ✓✓</span></div>
+          <div class="typing"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="trust">Trusted by 10,000+ businesses worldwide</p>
+    <div class="logos">
+      <span>boAt</span>
+      <span>lenskart</span>
+      <span class="l2">ZIVAME</span>
+      <span>mCaffeine</span>
+      <span class="l3">the moms co.</span>
+    </div>
+  </section>
+
+  <!-- ---------------- right ---------------- -->
+  <section class="right">
+    <div class="rin">
+      <h2 class="wb">Welcome back 👋</h2>
+      <p class="sub">Sign in to continue to your account</p>
+
+      <div class="form">
+        <div>
+          <label for="email">Email address</label>
+          <div class="inp" id="wrapE"><input id="email" type="email" placeholder="you@company.com" autocomplete="email"></div>
+        </div>
+
+        <div>
+          <label for="pw">Password</label>
+          <div class="inp" id="wrapP">
+            <input id="pw" type="password" placeholder="Enter your password" autocomplete="current-password">
+            <button class="eye" id="eye" aria-label="Show password" onclick="toggleEye()">
+              <svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <p class="msg" id="msg"></p>
+
+        <div class="opts">
+          <button class="rem" id="rem" onclick="toggleRem()" aria-pressed="true">
+            <span class="box on" id="box"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></span>
+            Remember me
+          </button>
+          <button class="forgot" onclick="say('Password reset link sent to your email.')">Forgot password?</button>
+        </div>
+
+        <button class="signin" id="btn" onclick="doSignIn()">Sign in</button>
+
+        <div class="div"><hr><span>or continue with</span><hr></div>
+
+        <div class="sso">
+          <button onclick="ssoIn()">
+            <svg viewBox="0 0 48 48"><path fill="#4285F4" d="M45 24c0-1.6-.1-2.7-.4-4H24v7.5h12c-.2 2-1.6 5-4.5 7l6.9 5.3C42.5 36 45 30.6 45 24z"/><path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.4-5.2l-6.9-5.3c-1.9 1.3-4.4 2.2-7.5 2.2-5.7 0-10.6-3.8-12.3-9.1l-7.1 5.5C8.2 41.2 15.5 46 24 46z"/><path fill="#FBBC05" d="M11.7 28.6c-.5-1.3-.7-2.7-.7-4.1s.3-2.8.7-4.1l-7.1-5.5C3 17.8 2 20.8 2 24s1 6.2 2.6 9.1l7.1-4.5z"/><path fill="#EA4335" d="M24 10.6c3.2 0 5.4 1.4 6.6 2.5l5.9-5.8C32.9 4 27.9 2 24 2 15.5 2 8.2 6.8 4.6 14.9l7.1 5.5c1.7-5.3 6.6-9.8 12.3-9.8z"/></svg>
+            Continue with Google
+          </button>
+          <button onclick="ssoIn()">
+            <svg viewBox="0 0 24 24"><path fill="#F25022" d="M2 2h9.5v9.5H2z"/><path fill="#7FBA00" d="M12.5 2H22v9.5h-9.5z"/><path fill="#00A4EF" d="M2 12.5h9.5V22H2z"/><path fill="#FFB900" d="M12.5 12.5H22V22h-9.5z"/></svg>
+            Continue with Microsoft
+          </button>
+        </div>
+
+        <p class="done" id="done"></p>
+      </div>
+
+      <p class="foot">Don't have an account? <b onclick="say('Opening sign up…')">Sign up</b></p>
+    </div>
+  </section>
+
+</div>
+</div>
+
+<div id="app" class="hide">
+  <aside class="side">
+    <div class="brand"><span class="mk">C</span><b>Cheerio AI</b></div>
+    <button class="nv on" data-p="dash"><svg viewBox="0 0 24 24"><path d="M3 10.2 12 3l9 7.2V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span class="lb">Dashboard</span></button>
+    <button class="nv" data-p="inbox"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.5-.7L3 21l1.8-5.1A8.3 8.3 0 0 1 3.6 11.5 8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/></svg><span class="lb">Inbox</span><span class="ct">14</span></button>
+    <button class="nv" data-p="contacts"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg><span class="lb">Contacts</span></button>
+    <button class="nv" data-p="campaigns"><svg viewBox="0 0 24 24"><path d="M21.5 2.5 2.5 10l7.6 2.9L13 20.5z"/><path d="m10.1 12.9 4.3-4.3"/></svg><span class="lb">Campaigns</span></button>
+    <div class="sec">AUTOMATION</div>
+    <button class="nv" data-p="builder"><svg viewBox="0 0 24 24"><rect x="9" y="2.5" width="6" height="5" rx="1.5"/><rect x="2.5" y="16.5" width="6" height="5" rx="1.5"/><rect x="15.5" y="16.5" width="6" height="5" rx="1.5"/><path d="M12 7.5v4.5M5.5 16.5V12h13v4.5"/></svg><span class="lb">Workflows</span></button>
+    <button class="nv" data-p="connect"><svg viewBox="0 0 24 24"><rect x="3.5" y="8" width="17" height="12" rx="3"/><path d="M12 4.5V8M8.5 13.5h.01M15.5 13.5h.01M9.5 17h5"/></svg><span class="lb">Connectors &amp; Agents</span></button>
+    <div class="plan">
+      <div class="btw"><span style="font-size:12.5px;font-weight:600">Automation tasks</span><span class="xs mut num">62%</span></div>
+      <div class="tk"><i style="width:62%"></i></div>
+      <div class="xs mut num">31,240 of 50,000 used · resets in 12 days</div>
+      <button class="btn sm2" style="justify-content:center">Upgrade plan</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <div><h1 id="ptitle">Dashboard</h1><div class="sb" id="psub">Overview of your automation</div></div>
+      <div class="gr"></div>
+      <div class="srch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Search or ask Cheerio…</span></div>
+      <button class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .9-1 1.6v.3M12 17h.01"/></svg></button>
+      <button class="ico"><svg viewBox="0 0 24 24"><path d="M18 8.5a6 6 0 1 0-12 0c0 6-2.5 7.5-2.5 7.5h17S18 14.5 18 8.5zM13.7 19.5a2 2 0 0 1-3.4 0"/></svg><span class="dot">12</span></button>
+      <button class="me" onclick="signOut()" title="Sign out"><span class="av a32">AK</span><span style="text-align:left"><div style="font-size:12.5px;font-weight:600;line-height:1.2">Arjun Kumar</div><div style="font-size:11px;color:var(--ink3)">Admin</div></span></button>
+    </header>
+    <div id="view"></div>
+  </main>
+</div>
+
+<script>
+/* ================= icons ================= */
+var IC={
+ bolt:'<path d="M13 2.5 4.5 13.5H11l-1 8L19.5 10H13z"/>',
+ robot:'<rect x="3.5" y="8" width="17" height="12" rx="3"/><path d="M12 4.5V8M8.5 13.5h.01M15.5 13.5h.01M9.5 17h5"/>',
+ plug:'<path d="M10 3.5h4v3a2 2 0 0 0 2 2h3v4h-3a2 2 0 0 0-2 2v3h-4v-3a2 2 0 0 0-2-2H5v-4h3a2 2 0 0 0 2-2z"/>',
+ flow:'<rect x="9" y="2.5" width="6" height="5" rx="1.5"/><rect x="2.5" y="16.5" width="6" height="5" rx="1.5"/><rect x="15.5" y="16.5" width="6" height="5" rx="1.5"/><path d="M12 7.5v4.5M5.5 16.5V12h13v4.5"/>',
+ send:'<path d="M21.5 2.5 2.5 10l7.6 2.9L13 20.5z"/><path d="m10.1 12.9 4.3-4.3"/>',
+ chat:'<path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.5-.7L3 21l1.8-5.1A8.3 8.3 0 0 1 3.6 11.5 8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/>',
+ rupee:'<path d="M7 4h10M7 8.5h10M15.5 4c0 3.6-2.6 4.5-5.5 4.5H7l8 11"/>',
+ clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.2 2"/>',
+ spark:'<path d="m12 3 2 5.4 5.4 2-5.4 2-2 5.4-2-5.4-5.4-2 5.4-2z"/><path d="M18.5 15.5 19.4 18l2.5.9-2.5.9-.9 2.5-.9-2.5-2.5-.9 2.5-.9z"/>',
+ check:'<path d="m4.5 12.5 5 5 10-11"/>',
+ warn:'<path d="M12 3.5 21.5 20H2.5z"/><path d="M12 10v4M12 17h.01"/>',
+ filter:'<path d="M3.5 5.5h17l-6.5 8v6l-4 2v-8z"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ play:'<path d="M7 4.5 19 12 7 19.5z"/>',
+ branch:'<circle cx="7" cy="6" r="2.5"/><circle cx="7" cy="18" r="2.5"/><circle cx="17" cy="12" r="2.5"/><path d="M7 8.5v7M9.5 6h2a3 3 0 0 1 3 3v.8M9.5 18h2a3 3 0 0 0 3-3v-.8"/>',
+ target:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
+ cart:'<path d="M3 4h2.2l2.3 11.5h10.2L20 7.5H6"/><circle cx="9" cy="19.5" r="1.6"/><circle cx="17.5" cy="19.5" r="1.6"/>',
+ tag:'<path d="M3.5 11.5V4.5h7l10 10-7 7z"/><circle cx="7.5" cy="8.5" r="1.3"/>',
+ shield:'<path d="M12 3 5 6v5.5c0 4.4 3 8 7 9.5 4-1.5 7-5.1 7-9.5V6z"/><path d="m9 12 2 2 4-4"/>',
+ head:'<path d="M4 13a8 8 0 0 1 16 0"/><rect x="2.5" y="13" width="4" height="6" rx="2"/><rect x="17.5" y="13" width="4" height="6" rx="2"/><path d="M20 19v.5a2.5 2.5 0 0 1-2.5 2.5H13"/>',
+ refresh:'<path d="M20 11a8 8 0 0 0-14-4.5L3.5 9M4 13a8 8 0 0 0 14 4.5L20.5 15"/><path d="M3.5 4.5V9H8M20.5 19.5V15H16"/>',
+ mail:'<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="m3 7 9 6 9-6"/>',
+ db:'<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+ pause:'<path d="M9 5v14M15 5v14"/>'
+};
+function ic(n,cls){return '<svg viewBox="0 0 24 24" class="'+(cls||'')+'">'+IC[n]+'</svg>';}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function el(h){var d=document.createElement('div');d.innerHTML=h.trim();return d.firstChild;}
+var CH={WhatsApp:'var(--wa)',Instagram:'var(--ig)',Email:'var(--em)',SMS:'var(--sm)',Messenger:'var(--ms)'};
+
+/* ================= data ================= */
+var CONV=[
+{n:"Rahul Sharma",ini:"RS",ch:"WhatsApp",t:"10:32",unread:2,ai:"handling",sess:"open",mins:1274,
+ p:"Perfect, thanks! That was quick.",tags:["VIP","Repeat"],phone:"+91 98765 43210",city:"Bengaluru",
+ stage:"Customer",ltv:"₹18,760",orders:7,since:"Jan 2024",
+ msgs:[["them","Hi, I want to check the status of my order","10:30"],
+       ["us","Hi Rahul — happy to help. Could you share the order ID?","10:30","Support Agent"],
+       ["them","My order ID is #12345","10:31"],
+       ["us","Order #12345 shipped on 14 May and is due to arrive 18 May. Here's your tracking link.","10:31","Support Agent"],
+       ["them","Perfect, thanks! That was quick.","10:32"]],
+ sum:"Order-status query on #12345. Support Agent confirmed shipment and shared tracking. Customer satisfied; no action needed.",
+ sug:"Glad that helped, Rahul! I'll ping you again once it's out for delivery. Anything else I can check?",
+ src:["Shopify · Order #12345","Delhivery tracking","Shipping policy"],
+ acts:[["Looked up order","Shopify · #12345 · 10:31"],["Fetched tracking","Delhivery AWB 4471223 · 10:31"],["Resolved without escalation","confidence 0.94"]],
+ insight:"Buys every 6–8 weeks. Last order was 9 weeks ago — good candidate for the replenishment flow."},
+{n:"Priya Mehta",ini:"PM",ch:"Instagram",t:"10:28",unread:1,ai:"waiting",sess:"na",
+ p:"Do you have this product in black?",tags:["New lead"],phone:"@priya.mehta",city:"Mumbai",
+ stage:"Lead",ltv:"—",orders:0,since:"Apr 2025",
+ msgs:[["them","Saw your reel — do you have this product in black?","10:28"]],
+ sum:"Product availability question from an Instagram reel. Stock check needed before replying.",
+ sug:"Hi Priya! Yes — the black colourway is back in stock. Want me to send you the link?",
+ src:["Shopify · Catalog"],
+ acts:[["Matched product","Yoga Mat Pro · 2 variants · 10:28"],["Paused for a human","holding stock needs approval"]],
+ insight:"First contact, arrived from a paid Meta ad. High intent language — route to Sales Agent."},
+{n:"Amit Verma",ini:"AV",ch:"Email",t:"10:22",unread:3,ai:"escalated",sess:"na",
+ p:"I need help with the refund process",tags:["Refund"],phone:"amit.verma@gmail.com",city:"New Delhi",
+ stage:"Customer",ltv:"₹9,240",orders:3,since:"Nov 2024",
+ msgs:[["them","I need help with the refund process for my last order.","10:20"],
+       ["us","I can help with that. Could you confirm the order number?","10:22","Support Agent"],
+       ["them","It's #12088, ordered 2 May. The amount was ₹6,400.","10:22"]],
+ sum:"Refund request on order #12088 for ₹6,400. Above the ₹5,000 auto-approval threshold, so escalated to a human.",
+ sug:"Thanks Amit. ₹6,400 is above what I can approve automatically, so I've passed this to Sneha — she'll confirm within the hour.",
+ src:["Refund policy","Shopify · Order #12088"],
+ acts:[["Read refund policy","14-day window · order qualifies"],["Escalated to human","amount over ₹5,000 · 10:22"]],
+ insight:"Second refund in 90 days. Retention Agent flags churn risk — consider a goodwill credit."},
+{n:"Sneha Iyer",ini:"SI",ch:"WhatsApp",t:"10:15",unread:1,ai:"handling",sess:"closing",mins:41,
+ p:"Can I reschedule my appointment?",tags:["VIP","High value"],phone:"+91 99887 76655",city:"Chennai",
+ stage:"Customer",ltv:"₹42,110",orders:14,since:"Jan 2023",
+ msgs:[["them","Can I reschedule my appointment?","10:14"],
+       ["us","Of course. I have Thursday 4pm or Friday 11am open — which suits you?","10:15","Support Agent"]],
+ sum:"Reschedule request. Agent offered two slots from the booking calendar. Session window closes in 41 minutes.",
+ sug:"No rush, Sneha — Thursday 4pm and Friday 11am are both still free. Just reply with either one.",
+ src:["Calendly · Booking calendar"],
+ acts:[["Checked calendar","3 slots open this week · 10:15"],["Session warning","41 min left before a template is required"]],
+ insight:"Highest-LTV contact in this view. Never let this thread hit the 24-hour window."},
+{n:"Vikram Singh",ini:"VS",ch:"Messenger",t:"09:58",unread:0,ai:"resolved",sess:"na",
+ p:"Thanks! It worked.",tags:[],phone:"Messenger",city:"Pune",
+ stage:"Customer",ltv:"₹3,120",orders:1,since:"Mar 2025",
+ msgs:[["them","App keeps logging me out","09:52"],
+       ["us","Try clearing the app cache — Settings › Storage › Clear cache, then sign in again.","09:54","Support Agent"],
+       ["them","Thanks! It worked.","09:58"]],
+ sum:"Login issue resolved with a cache-clear step from the help centre. Closed.",
+ sug:"Great to hear! I'll leave this closed — reopen any time if it comes back.",
+ src:["Help centre · Login issues"],
+ acts:[["Matched help article","Login issues · confidence 0.88"],["Resolved without escalation",""]],
+ insight:"First purchase 3 weeks ago. Good candidate for the onboarding nurture sequence."},
+{n:"Ananya Pillai",ini:"AP",ch:"WhatsApp",t:"09:50",unread:2,ai:"handling",sess:"open",mins:380,
+ p:"Where is my shipment?",tags:["Repeat"],phone:"+91 77665 44332",city:"Kochi",
+ stage:"Customer",ltv:"₹14,890",orders:5,since:"Aug 2024",
+ msgs:[["them","Where is my shipment?","09:49"],
+       ["us","It left the Pune warehouse this morning and is due Thursday.","09:50","Support Agent"]],
+ sum:"Shipment tracking question answered from courier data. Awaiting acknowledgement.",
+ sug:"You're all set — I'll message you the moment it's out for delivery.",
+ src:["Delhivery tracking"],
+ acts:[["Looked up tracking","AWB 8890114 · in transit · 09:50"]],
+ insight:"Opens every WhatsApp message within 5 minutes. Strong channel fit."},
+{n:"Raj Patel",ini:"RP",ch:"WhatsApp",t:"Yesterday",unread:1,ai:"blocked",sess:"closed",
+ p:"I haven't received my invoice",tags:["Follow up"],phone:"+91 77331 22345",city:"Ahmedabad",
+ stage:"Lead",ltv:"—",orders:0,since:"Apr 2025",
+ msgs:[["them","I haven't received my invoice","Yesterday 09:10"]],
+ sum:"Invoice request. The 24-hour window has closed, so only an approved template can be sent.",
+ sug:"Hi Raj — sending your invoice for order #12088 across now. Let me know if anything looks off.",
+ src:["Billing · Invoice #12088"],
+ acts:[["Found invoice","order #12088"],["Blocked","window closed · needs template invoice_resend_v1"]],
+ insight:"Window closed 3 hours ago. A paid template costs ₹0.72 — approve or let it lapse."}
+];
+
+var CONTACTS=CONV.map(function(c){return c;});
+
+var CAMPS=[
+{n:"Monsoon Refresh Offer",sub:"Promotional",ch:"WhatsApp",st:"Running",aud:"VIP + Repeat buyers",
+ size:12456,sent:12456,del:12269,read:8104,clk:2531,cvr:568,rev:"₹8,42,300",spend:"₹8,968",cpa:"₹15.79",
+ sched:"Started 28 Aug, 10:30",tpl:"monsoon_offer_v2",ai:true},
+{n:"Abandoned Cart Recovery",sub:"Transactional",ch:"WhatsApp",st:"Running",aud:"Cart abandoners · 2h",
+ size:8932,sent:8932,del:8735,read:4718,clk:1746,cvr:412,rev:"₹5,18,400",spend:"₹6,431",cpa:"₹15.61",
+ sched:"Always on since 1 Jun",tpl:"cart_recover_v3",ai:true},
+{n:"Festive Preview — Instagram",sub:"Promotional",ch:"Instagram",st:"Completed",aud:"All customers",
+ size:15230,sent:15230,del:14804,read:8807,clk:2985,cvr:729,rev:"₹9,91,700",spend:"₹0",cpa:"₹0.00",
+ sched:"Ended 22 Aug",tpl:"—",ai:false},
+{n:"New Arrivals Newsletter",sub:"Promotional",ch:"Email",st:"Completed",aud:"Newsletter list",
+ size:9856,sent:9856,del:9767,read:6791,clk:2178,cvr:412,rev:"₹3,44,900",spend:"₹98",cpa:"₹0.24",
+ sched:"Ended 18 Aug",tpl:"—",ai:false},
+{n:"Win-back · Lapsed 90 days",sub:"Retention",ch:"WhatsApp",st:"Scheduled",aud:"Lapsed 90d · 4,120",
+ size:4120,sent:0,del:0,read:0,clk:0,cvr:0,rev:"—",spend:"est ₹2,966",cpa:"—",
+ sched:"Starts 5 Sep, 09:00",tpl:"winback_v4",ai:true},
+{n:"Post-purchase Review Request",sub:"Transactional",ch:"SMS",st:"Scheduled",aud:"Delivered orders",
+ size:5432,sent:0,del:0,read:0,clk:0,cvr:0,rev:"—",spend:"est ₹1,086",cpa:"—",
+ sched:"Starts 3 Sep, 18:00",tpl:"review_req_v1",ai:false},
+{n:"VIP Early Access",sub:"Promotional",ch:"WhatsApp",st:"Draft",aud:"VIP tier · 2,345",
+ size:2345,sent:0,del:0,read:0,clk:0,cvr:0,rev:"—",spend:"est ₹1,688",cpa:"—",
+ sched:"Not scheduled",tpl:"vip_early_v1",ai:true}
+];
+
+var NODES=[
+{k:"TRIGGER",t:"Cart abandoned",s:"Shopify · checkout not completed",c:"br",ic:"cart",
+ cfg:[["Source","Shopify"],["Event","Checkout abandoned"],["Minimum cart value","₹1,200"]]},
+{k:"CONDITION",t:"Wait 2 hours, then check",s:"Skip if the order completed in the meantime",c:"wn",ic:"clock",
+ cfg:[["Delay","2 hours"],["Skip if","Order placed"],["Skip if","Unsubscribed"]]},
+{k:"AI AGENT",t:"Sales Agent writes the message",s:"Personalised from cart contents and past orders",c:"br",ic:"robot",
+ cfg:[["Agent","Sales Agent"],["Tone","Warm, concise"],["Must include","Cart items, discount if eligible"]]},
+{k:"CONNECTOR",t:"WhatsApp Business",s:"Template cart_recover_v3 · approved",c:"ok",ic:"plug",
+ cfg:[["Connector","WhatsApp Business API"],["Template","cart_recover_v3"],["Cost","₹0.72 per conversation"]]},
+{k:"ACTION",t:"Send the message",s:"Personalised WhatsApp message with cart link",c:"ok",ic:"send",
+ cfg:[["Channel","WhatsApp"],["Attach","Cart deep link"],["Track","Click and conversion"]]},
+{k:"DELAY",t:"Wait 24 hours",s:"Give them time to come back",c:"nt",ic:"clock",
+ cfg:[["Delay","24 hours"],["Business hours only","No"]]},
+{k:"FOLLOW-UP",t:"Send SMS if still unpurchased",s:"Falls back to SMS once the WhatsApp window closes",c:"wn",ic:"refresh",
+ cfg:[["Channel","SMS"],["Condition","No purchase yet"],["Cost","₹0.20 per message"]]}
+];
+
+var CONNECTORS=[
+{n:"Shopify",cat:"E-commerce",bg:"#5A8E3E",ini:"S",st:"Connected",sync:"2 min ago",
+ d:"Orders, customers, products and checkout events sync both ways.",
+ perms:["Read orders","Read customers","Write tags"],flows:6},
+{n:"WhatsApp Business",cat:"Messaging",bg:"#1FA855",ini:"W",st:"Connected",sync:"Live",
+ d:"Official Meta BSP connection. Sends templates and free-form session messages.",
+ perms:["Send messages","Manage templates","Read status"],flows:11},
+{n:"Salesforce",cat:"CRM",bg:"#2A8FD4",ini:"SF",st:"Connected",sync:"18 min ago",
+ d:"Two-way lead and opportunity sync with the Sales Agent.",
+ perms:["Read leads","Write opportunities"],flows:4},
+{n:"HubSpot",cat:"CRM",bg:"#EA6C3A",ini:"H",st:"Connected",sync:"1 hr ago",
+ d:"Contact properties and lifecycle stages mirror into Cheerio segments.",
+ perms:["Read contacts","Write properties"],flows:3},
+{n:"Slack",cat:"Internal",bg:"#4A154B",ini:"SL",st:"Connected",sync:"Live",
+ d:"Escalation alerts and daily digests post into your team channels.",
+ perms:["Post messages"],flows:5},
+{n:"Google Sheets",cat:"Data",bg:"#1E8E5A",ini:"G",st:"Connected",sync:"6 hrs ago",
+ d:"Export segments and campaign results to a live sheet.",
+ perms:["Read sheets","Write rows"],flows:2},
+{n:"Instagram",cat:"Messaging",bg:"#D8306B",ini:"IG",st:"Action needed",sync:"Token expires in 4 days",
+ d:"Direct messages and comment replies from your business account.",
+ perms:["Read messages","Send messages"],flows:3},
+{n:"Razorpay",cat:"Payments",bg:"#1E4CC4",ini:"R",st:"Connected",sync:"9 min ago",
+ d:"Payment links, refunds and settlement status inside workflows.",
+ perms:["Create links","Read payments"],flows:2},
+{n:"Zendesk",cat:"Support",bg:"#0B4B44",ini:"Z",st:"Not connected",sync:"—",
+ d:"Sync tickets so the Support Agent can answer from existing history.",
+ perms:["Read tickets","Write comments"],flows:0}
+];
+
+var AGENTS=[
+{n:"Sales Agent",role:"Qualifies leads and books demos",bg:"linear-gradient(135deg,#7C5CF0,#5B34E0)",ic:"target",
+ on:true,tasks:"8,412",rate:"31.4%",rateL:"Lead → opportunity",hand:"6.2%",handL:"Handed to human",
+ skills:["Lead qualification","Product Q&A","Demo booking","Price objections"],
+ conn:["Shopify","Salesforce","WhatsApp Business"],perf:[62,68,64,74,80,77,86,91]},
+{n:"Support Agent",role:"Resolves customer issues across channels",bg:"linear-gradient(135deg,#3BAE8C,#0E9F6E)",ic:"head",
+ on:true,tasks:"21,908",rate:"74.1%",rateL:"Resolved unaided",hand:"25.9%",handL:"Escalated",
+ skills:["Order status","Returns and refunds","Shipping","Troubleshooting"],
+ conn:["Shopify","WhatsApp Business","Slack"],perf:[58,63,69,66,72,75,74,78]},
+{n:"Retention Agent",role:"Wins back lapsed and at-risk customers",bg:"linear-gradient(135deg,#F0A03C,#D97B12)",ic:"refresh",
+ on:false,tasks:"3,146",rate:"18.9%",rateL:"Win-back rate",hand:"2.1%",handL:"Handed to human",
+ skills:["Churn scoring","Win-back offers","Replenishment nudges"],
+ conn:["Shopify","HubSpot","WhatsApp Business"],perf:[40,44,42,49,52,48,55,58]}
+];
+
+var ACTIVITY=[
+["ok","Sales Agent qualified <b>Priya Mehta</b> as high intent","Routed to sales queue · 2 min ago"],
+["br","Workflow <b>Abandoned Cart Recovery</b> ran 214 times","₹1,84,200 recovered today · 11 min ago"],
+["wn","<b>Instagram</b> token expires in 4 days","Reconnect to avoid dropped messages · 26 min ago"],
+["ok","<b>Monsoon Refresh Offer</b> passed 8,000 reads","65.1% read rate · 1 hr ago"],
+["dg","Template <b>winback_v4</b> rejected by Meta","Policy: promotional content in utility category · 2 hrs ago"],
+["br","Support Agent resolved 412 conversations","74% without a human · 3 hrs ago"],
+["ok","<b>Razorpay</b> connector synced","1,204 payments reconciled · 4 hrs ago"]
+];
+
+var RECS=[
+["spark","Move 3 WhatsApp sends into the free session window","Roughly 1,840 messages a week currently go out as paid templates within 60 minutes of a customer reply. Reordering two workflow steps would make them free.","Save ~₹1,320/wk"],
+["target","Retention Agent is switched off while churn is rising","412 customers crossed 90 days inactive this month, up 18%. The agent already has a tested win-back flow ready to run.","Turn on agent"],
+["warn","Instagram connector expires in 4 days","Three live workflows depend on it. If the token lapses, Instagram DMs will queue but not send.","Reconnect"],
+["cart","Cart recovery converts best at 90 minutes, not 2 hours","Across 8,932 runs, the 90-minute cohort converted 4.8% versus 3.1% at two hours.","Adjust delay"]
+];
+
+var shown=false, remember=true;
+
+function toggleEye(){
+  var p=document.getElementById('pw'), e=document.getElementById('eye');
+  shown=!shown;
+  p.type = shown ? 'text' : 'password';
+  e.setAttribute('aria-label', shown ? 'Hide password' : 'Show password');
+  e.innerHTML = shown
+    ? '<svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7c2 0 3.7.6 5.2 1.5M22 12s-3.6 7-10 7c-2 0-3.8-.6-5.3-1.6"/><path d="M4 4l16 16"/></svg>'
+    : '<svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+  p.focus();
+}
+
+function toggleRem(){
+  remember=!remember;
+  document.getElementById('box').classList.toggle('on',remember);
+  document.getElementById('rem').setAttribute('aria-pressed',remember);
+}
+
+function clearErr(){
+  document.getElementById('msg').classList.remove('show');
+  document.getElementById('wrapE').classList.remove('bad');
+  document.getElementById('wrapP').classList.remove('bad');
+}
+function err(text,which){
+  var m=document.getElementById('msg');
+  m.textContent=text; m.classList.add('show');
+  if(which) document.getElementById(which).classList.add('bad');
+}
+function say(text){
+  var d=document.getElementById('done');
+  d.textContent=text; d.classList.add('show');
+  clearTimeout(window._t);
+  window._t=setTimeout(function(){d.classList.remove('show');},2600);
+}
+
+function doSignIn(){
+  clearErr();
+  var e=document.getElementById('email').value.trim();
+  var p=document.getElementById('pw').value;
+  if(!e){ err('Enter your email address.','wrapE'); return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)){ err('That email address doesn\'t look right.','wrapE'); return; }
+  if(!p){ err('Enter your password.','wrapP'); return; }
+  if(p.length<6){ err('Your password is at least 6 characters.','wrapP'); return; }
+  var b=document.getElementById('btn');
+  b.disabled=true; b.textContent='Signing in…';
+  setTimeout(function(){ b.disabled=false; b.textContent='Sign in'; enterApp(); },700);
+}
+
+function enterApp(){
+  document.getElementById('signin').classList.add('hide');
+  document.getElementById('app').classList.remove('hide');
+  go('dash'); window.scrollTo(0,0);
+}
+function ssoIn(){ enterApp(); }
+document.getElementById('email').addEventListener('input',clearErr);
+document.getElementById('pw').addEventListener('input',clearErr);
+document.addEventListener('keydown',function(ev){
+  if(ev.key==='Enter'){var a=document.activeElement;if(a&&(a.id==='email'||a.id==='pw'))doSignIn();}
+});
+function signOut(){
+  document.getElementById("app").classList.add("hide");
+  document.getElementById("signin").classList.remove("hide");
+  clearErr(); window.scrollTo(0,0);
+}
+
+/* ================= state / router ================= */
+var S={page:'dash',conv:0,tab:'copilot',contact:0,camp:0,node:2,draft:'',
+        cfilter:'All',connFilter:'All',generated:false};
+var TITLES={dash:['Dashboard','Overview of your automation'],
+  inbox:['Inbox','Every channel in one queue'],
+  contacts:['Contacts','32,680 customers and leads'],
+  campaigns:['Campaigns','Reach, engagement and revenue'],
+  builder:['Workflow Builder','Describe it — Cheerio builds it'],
+  connect:['Connectors & AI Agents','What Cheerio is plugged into']};
+
+function go(p){
+  S.page=p;
+  document.querySelectorAll('.nv').forEach(function(b){b.classList.toggle('on',b.dataset.p===p);});
+  document.getElementById('ptitle').textContent=TITLES[p][0];
+  document.getElementById('psub').textContent=TITLES[p][1];
+  render();window.scrollTo(0,0);
+}
+function render(){
+  var v=document.getElementById('view');v.innerHTML='';
+  ({dash:rDash,inbox:rInbox,contacts:rContacts,campaigns:rCamps,builder:rBuilder,connect:rConnect}[S.page])(v);
+}
+
+/* ================= 1 · DASHBOARD ================= */
+function rDash(v){
+  var stat=function(lb,vl,dl,up,icn,col,bgc){
+    return '<div class="stat"><div class="ic" style="background:'+bgc+'">'+ic(icn).replace('<svg','<svg style="stroke:'+col+'"')+'</div>'+
+      '<div class="lb">'+lb+'</div><div class="vl num">'+vl+'</div>'+
+      '<div class="dl '+(up===1?'up':up===-1?'dn':'mut')+'">'+dl+'</div></div>';
+  };
+  var weeks=['Jul 7','Jul 14','Jul 21','Jul 28','Aug 4','Aug 11','Aug 18','Aug 25'];
+  var reach=[38,44,41,52,58,55,66,74], conv=[9,12,10,15,18,16,21,26];
+  var bars='';
+  for(var i=0;i<weeks.length;i++){
+    bars+='<div class="b"><i style="height:'+(conv[i]/80*100)+'%;background:var(--br)"></i>'+
+          '<i style="height:'+((reach[i]-conv[i])/80*100)+'%;background:var(--brL)"></i></div>';
+  }
+  var recs='';
+  RECS.forEach(function(r){
+    recs+='<div class="rec"><span class="ic">'+ic(r[0])+'</span><div class="bd">'+
+      '<div class="t">'+r[1]+'</div><div class="d">'+r[2]+'</div></div>'+
+      '<button class="btn sm2" style="align-self:center;white-space:nowrap">'+r[3]+'</button></div>';
+  });
+  var feed='';
+  ACTIVITY.forEach(function(a){
+    var c={ok:'var(--ok)',br:'var(--br)',wn:'var(--warn)',dg:'var(--dg)'}[a[0]];
+    feed+='<div class="fe"><span class="dt" style="background:'+c+'"></span><div><div class="t">'+a[1]+'</div><div class="m">'+a[2]+'</div></div></div>';
+  });
+  var spark='';[41,48,44,56,52,63,69,66,74,71,83,92].forEach(function(h,j){
+    spark+='<i style="height:'+h+'%" class="'+(j>8?'hi':'')+'"></i>';});
+
+  v.appendChild(el('<div class="wrap">'+
+
+  '<div class="aibar"><div class="btw"><div>'+
+    '<div class="row g8"><span>'+ic('spark','spark2')+'</span><span class="eyebrow" style="color:var(--br)">CHEERIO AI</span></div>'+
+    '<div class="ttl" style="margin-top:7px">Tell Cheerio what you want to automate</div>'+
+    '<div class="sm mut" style="margin-top:3px">Describe it in plain words. Cheerio builds the workflow, you approve it, then it runs.</div>'+
+  '</div></div>'+
+  '<div class="fld">'+ic('spark','spark2')+
+    '<input id="dashq" placeholder="Recover abandoned carts after 2 hours and send a personalised WhatsApp message">'+
+    '<button class="btn pri" onclick="fromDash()">Build workflow</button></div>'+
+  '<div class="sugs">'+
+    '<button class="sug" onclick="pick(this)">Win back customers inactive for 90 days</button>'+
+    '<button class="sug" onclick="pick(this)">Ask for a review 3 days after delivery</button>'+
+    '<button class="sug" onclick="pick(this)">Route high-value leads to the sales team</button>'+
+  '</div></div>'+
+
+  '<div class="stats">'+
+    stat('Automation tasks','31,240','18,760 remaining · resets in 12 days',0,'bolt','var(--br)','var(--brS)')+
+    stat('Active AI agents','2 <span style="font-size:15px;color:var(--ink3);font-weight:500">of 3</span>','Retention Agent is paused',0,'robot','var(--ok)','var(--okS)')+
+    stat('Connected apps','8','1 needs attention',-1,'plug','var(--info)','var(--infoS)')+
+    stat('Active workflows','12','3 added this month',1,'flow','var(--warn)','var(--warnS)')+
+  '</div>'+
+
+  '<div style="display:grid;grid-template-columns:1.55fr 1fr;gap:16px">'+
+    '<div class="card"><div class="hd"><div><h3>Campaign performance</h3><div class="s">Reach and conversions, last 8 weeks</div></div><div class="gr"></div>'+
+      '<div class="leg"><span><i class="pip" style="background:var(--brL)"></i>Reach</span><span><i class="pip" style="background:var(--br)"></i>Converted</span></div></div>'+
+      '<div class="pad">'+
+        '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px">'+
+          '<div><div class="xs mut">Reach</div><div class="num" style="font-size:19px;font-weight:650;margin-top:3px">4.28L</div></div>'+
+          '<div><div class="xs mut">Delivered</div><div class="num" style="font-size:19px;font-weight:650;margin-top:3px">97.8%</div></div>'+
+          '<div><div class="xs mut">Engaged</div><div class="num" style="font-size:19px;font-weight:650;margin-top:3px">61.4%</div></div>'+
+          '<div><div class="xs mut">Converted</div><div class="num" style="font-size:19px;font-weight:650;margin-top:3px">2,121</div></div>'+
+        '</div>'+
+        '<div class="bars">'+bars+'</div>'+
+        '<div class="axis"><span>'+weeks[0]+'</span><span>'+weeks[7]+'</span></div>'+
+      '</div></div>'+
+
+    '<div class="card"><div class="hd"><span>'+ic('spark','spark2')+'</span><div><h3>Recommendations</h3><div class="s">Generated from this week\'s data</div></div></div>'+recs+'</div>'+
+  '</div>'+
+
+  '<div style="display:grid;grid-template-columns:1fr 1.35fr;gap:16px">'+
+    '<div class="card"><div class="hd"><div><h3>Revenue &amp; customers</h3><div class="s">Attributed to Cheerio, last 12 weeks</div></div></div>'+
+      '<div class="pad">'+
+        '<div class="row g16" style="align-items:flex-end">'+
+          '<div><div class="xs mut">Attributed revenue</div><div class="num" style="font-size:28px;font-weight:650;letter-spacing:-.03em;margin-top:4px">₹26.9L</div>'+
+          '<div class="xs up row g6" style="margin-top:5px">'+ic('check')+' +22.4% vs previous</div></div>'+
+        '</div>'+
+        '<div class="spark" style="margin-top:16px">'+spark+'</div>'+
+        '<div style="margin-top:18px;display:flex;flex-direction:column;gap:11px">'+
+          ['Total customers|32,680|+12.5%','New this month|2,543|+8.4%','Repeat rate|38.2%|+3.1%','Avg order value|₹2,412|−1.8%']
+            .map(function(r){var p=r.split('|');
+              return '<div class="btw"><span class="sm mut">'+p[0]+'</span><span class="row g10"><b class="num" style="font-size:13.5px">'+p[1]+'</b>'+
+                '<span class="xs '+(p[2][0]==='+'?'up':'dn')+'" style="width:46px;text-align:right">'+p[2]+'</span></span></div>';}).join('')+
+        '</div>'+
+      '</div></div>'+
+
+    '<div class="card"><div class="hd"><div><h3>Recent activity</h3><div class="s">Agents, workflows and connectors</div></div><div class="gr"></div>'+
+      '<button class="btn sm2">Full audit log</button></div><div class="feed">'+feed+'</div></div>'+
+  '</div>'+
+
+  '</div>'));
+}
+function pick(b){document.getElementById('dashq').value=b.textContent;}
+function fromDash(){
+  var q=document.getElementById('dashq');
+  var v=(q.value||q.placeholder).trim();
+  S.generated=true;S.node=2;go('builder');
+  setTimeout(function(){var p=document.getElementById('bq');if(p)p.value=v;},30);
+}
+
+/* ================= 2 · INBOX ================= */
+function aiTag(a){
+  return {handling:'<span class="tag t-br">'+ic('robot')+'AI handling</span>',
+   waiting:'<span class="tag t-wn">Needs a human</span>',
+   escalated:'<span class="tag t-dg">Escalated</span>',
+   resolved:'<span class="tag t-ok">Resolved</span>',
+   blocked:'<span class="tag t-nt">Blocked</span>'}[a]||'';
+}
+function sessTag(c){
+  if(c.sess==='open')return '<span class="tag t-ok">Window open</span>';
+  if(c.sess==='closing')return '<span class="tag t-wn">'+c.mins+'m left</span>';
+  if(c.sess==='closed')return '<span class="tag t-nt">Template only</span>';
+  return '';
+}
+function rInbox(v){
+  var c=CONV[S.conv],i,list='';
+  for(i=0;i<CONV.length;i++){var k=CONV[i];
+    list+='<button class="cv'+(i===S.conv?' on':'')+'" onclick="S.conv='+i+';S.draft=\'\';render()">'+
+      '<div class="row g10"><span class="avw"><span class="av a32">'+k.ini+'</span>'+
+      '<i class="ch" style="background:'+CH[k.ch]+'"></i></span>'+
+      '<span class="gr" style="min-width:0"><span class="n">'+esc(k.n)+'</span></span>'+
+      '<span class="xs mut">'+k.t+'</span></div>'+
+      '<div class="p">'+esc(k.p)+'</div>'+
+      '<div class="row g6" style="flex-wrap:wrap">'+aiTag(k.ai)+sessTag(k)+
+      (k.unread?'<span class="gr"></span><span class="tag t-br num">'+k.unread+'</span>':'')+'</div></button>';
+  }
+  var msgs='<div class="day">Today</div>';
+  c.msgs.forEach(function(m){
+    msgs+='<div class="bub '+(m[0]==='us'?'us':'them')+'">'+(m[3]?'<span class="who">'+ic('robot')+' '+m[3]+'</span>':'')+
+      esc(m[1])+'<div class="tm">'+m[2]+(m[0]==='us'?' ✓✓':'')+'</div></div>';
+  });
+  var ses=c.sess==='open'?'<div class="sesbar" style="background:var(--okS);color:var(--ok)"><span>Session open — free replies for '+Math.floor(c.mins/60)+'h '+(c.mins%60)+'m</span><span>Paid template needed after that</span></div>'
+    :c.sess==='closing'?'<div class="sesbar" style="background:var(--warnS);color:var(--warn)"><span>Session closing in '+c.mins+' minutes</span><span>Reply now to stay free</span></div>'
+    :c.sess==='closed'?'<div class="sesbar" style="background:var(--dgS);color:var(--dg)"><span>Session closed — free replies not allowed</span><span>Send an approved template instead</span></div>':'';
+
+  var srcs='';c.src.forEach(function(s){srcs+='<span class="s">'+esc(s)+'</span>';});
+  var acts='';c.acts.forEach(function(a){
+    acts+='<div class="tli"><span class="rail2"><i style="background:var(--br)"></i></span><div><div class="t">'+esc(a[0])+'</div><div class="m">'+esc(a[1])+'</div></div></div>';});
+
+  var panel = S.tab==='copilot'
+   ? '<div class="pbody">'+
+     '<div><div class="eyebrow" style="margin-bottom:8px">CONVERSATION SUMMARY</div>'+
+       '<div class="note">'+esc(c.sum)+'<div class="btw xs mut" style="margin-top:9px"><span>Generated just now</span><span>Helpful? ↑ ↓</span></div></div></div>'+
+     '<div><div class="eyebrow" style="margin-bottom:8px">SUGGESTED REPLY</div>'+
+       '<div class="aisug"><div style="font-size:12.8px;line-height:1.55">'+esc(c.sug)+'</div>'+
+       '<div class="srcs">'+srcs+'</div>'+
+       '<div class="row g8"><button class="btn pri sm2" onclick="insertReply()">Insert into reply</button>'+
+       '<button class="btn sm2" onclick="insertReply()">Edit</button><span class="gr"></span>'+
+       '<span class="xs" style="color:var(--br)">Never auto-sends</span></div></div></div>'+
+     '<div><div class="eyebrow" style="margin-bottom:8px">WHAT THE AGENT DID</div><div class="tline">'+acts+'</div></div>'+
+     '<div><div class="eyebrow" style="margin-bottom:8px">AI INSIGHT</div><div class="note">'+esc(c.insight)+'</div></div>'+
+     '</div>'
+   : '<div class="pbody">'+
+     '<div class="row g12"><span class="avw"><span class="av a44">'+c.ini+'</span><i class="ch" style="background:'+CH[c.ch]+'"></i></span>'+
+       '<div><div style="font-size:15px;font-weight:600">'+esc(c.n)+'</div><div class="xs mut">'+esc(c.phone)+' · '+c.city+'</div></div></div>'+
+     '<div class="row g6" style="flex-wrap:wrap">'+c.tags.map(function(t){return '<span class="tag t-br">'+t+'</span>';}).join('')+'</div>'+
+     '<div><div class="eyebrow" style="margin-bottom:6px">CONTACT</div>'+
+       '<div class="kv"><span class="k">Lifecycle stage</span><span class="v">'+c.stage+'</span></div>'+
+       '<div class="kv"><span class="k">Lifetime value</span><span class="v num">'+c.ltv+'</span></div>'+
+       '<div class="kv"><span class="k">Orders</span><span class="v num">'+c.orders+'</span></div>'+
+       '<div class="kv"><span class="k">Customer since</span><span class="v">'+c.since+'</span></div></div>'+
+     '<div><div class="eyebrow" style="margin-bottom:6px">CONVERSATION</div>'+
+       '<div class="kv"><span class="k">Channel</span><span class="v">'+c.ch+'</span></div>'+
+       '<div class="kv"><span class="k">Handled by</span><span class="v">'+(c.ai==='escalated'?'Sneha Iyer':'Support Agent')+'</span></div>'+
+       '<div class="kv"><span class="k">Priority</span><span class="v">'+(c.ai==='escalated'?'High':'Medium')+'</span></div></div>'+
+     '<button class="btn" style="justify-content:center">View full profile</button>'+
+     '</div>';
+
+  v.appendChild(el('<div class="ibx" style="height:calc(100vh - 68px)">'+
+    '<div class="ilist"><div class="ihd">'+
+      '<div class="btw"><span class="h2">All conversations</span><span class="xs mut num">14 unread</span></div>'+
+      '<div class="tabs"><button class="tab on">All</button><button class="tab">AI handled</button><button class="tab">Needs me</button></div>'+
+      '<div class="row g6"><span class="chipf">'+ic('filter')+'Channel</span><span class="chipf">Agent</span><span class="chipf">Status</span></div>'+
+    '</div><div class="iscroll">'+list+'</div></div>'+
+
+    '<div class="thr"><div class="thd"><span class="avw"><span class="av a36">'+c.ini+'</span><i class="ch" style="background:'+CH[c.ch]+'"></i></span>'+
+      '<div><div class="row g8"><span style="font-size:14.5px;font-weight:600">'+esc(c.n)+'</span>'+aiTag(c.ai)+'</div>'+
+      '<div class="xs mut">'+c.ch+' · '+esc(c.phone)+'</div></div><div class="gr"></div>'+
+      (c.ai==='handling'?'<button class="btn sm2" onclick="takeover()">'+ic('user')+'Take over from AI</button>':'<span class="tag t-wn">You have this thread</span>')+
+      '<button class="btn sm2">Assign</button><button class="btn sm2">Resolve</button></div>'+
+      '<div class="msgs" id="msgs">'+msgs+'</div>'+ses+
+      '<div class="comp"><textarea id="draft" placeholder="Type a reply, or insert the AI suggestion…">'+esc(S.draft)+'</textarea>'+
+      '<div class="row g8"><button class="btn sm2" onclick="S.tab=\'copilot\';render()">'+ic('spark')+'Draft with AI</button>'+
+      '<button class="btn sm2">Templates</button><button class="btn sm2">Note</button><span class="gr"></span>'+
+      '<span class="chipf">'+c.ch+' ▾</span><button class="btn pri sm2" onclick="send()">'+ic('send')+'Send</button></div></div></div>'+
+
+    '<div class="ipanel"><div class="ptab">'+
+      '<button class="'+(S.tab==='copilot'?'on':'')+'" onclick="S.tab=\'copilot\';render()">AI Copilot</button>'+
+      '<button class="'+(S.tab==='details'?'on':'')+'" onclick="S.tab=\'details\';render()">Details</button></div>'+
+      panel+'</div></div>'));
+  var m=document.getElementById('msgs');if(m)m.scrollTop=m.scrollHeight;
+}
+function insertReply(){S.draft=CONV[S.conv].sug;render();var d=document.getElementById('draft');if(d)d.focus();}
+function send(){
+  var d=document.getElementById('draft');if(!d)return;
+  var t=d.value.trim();if(!t){d.style.outline='1px solid var(--dg)';return;}
+  CONV[S.conv].msgs.push(['us',t,'now']);CONV[S.conv].p=t;CONV[S.conv].unread=0;S.draft='';render();
+}
+function takeover(){CONV[S.conv].ai='waiting';render();}
+
+/* ================= 3 · CONTACTS ================= */
+var SEGS=['All','Customers','Leads','VIP','At risk','Unsubscribed'];
+function rContacts(v){
+  var c=CONTACTS[S.contact],i,rows='';
+  var list=CONTACTS.filter(function(k){
+    if(S.cfilter==='All')return true;
+    if(S.cfilter==='Customers')return k.stage==='Customer';
+    if(S.cfilter==='Leads')return k.stage==='Lead';
+    if(S.cfilter==='VIP')return k.tags.indexOf('VIP')>-1;
+    if(S.cfilter==='At risk')return k.tags.indexOf('Refund')>-1||k.tags.indexOf('Follow up')>-1;
+    return false;
+  });
+  list.forEach(function(k){
+    var idx=CONTACTS.indexOf(k);
+    rows+='<tr class="'+(idx===S.contact?'on':'')+'" onclick="S.contact='+idx+';render()">'+
+      '<td><div class="row g10"><span class="avw"><span class="av a32">'+k.ini+'</span>'+
+        '<i class="ch" style="background:'+CH[k.ch]+'"></i></span>'+
+        '<div><div class="nm">'+esc(k.n)+'</div><div class="s2">'+esc(k.phone)+'</div></div></div></td>'+
+      '<td><span class="tag '+(k.stage==='Customer'?'t-ok':'t-in')+'">'+k.stage+'</span></td>'+
+      '<td>'+(k.tags.length?k.tags.map(function(t){return '<span class="tag t-nt" style="margin-right:4px">'+t+'</span>';}).join(''):'<span class="mut">—</span>')+'</td>'+
+      '<td class="num">'+k.orders+'</td>'+
+      '<td class="num" style="font-weight:550">'+k.ltv+'</td>'+
+      '<td>'+sessTag(k)+'</td>'+
+      '<td class="mut">'+k.t+'</td></tr>';
+  });
+  var tl='';
+  var events=[
+   ['AGENT','var(--br)','Support Agent replied about order status','Cited 3 sources · not escalated','Today 10:31'],
+   ['PERSON','var(--ink3)','Sneha Iyer added a note','“Prefers WhatsApp for everything”','Today 10:28'],
+   ['ORDER','var(--ok)','Order #12345 placed','₹2,499 · paid via Razorpay','14 May'],
+   ['WORKFLOW','var(--info)','Order confirmation sent','Template order_conf_v2 · ₹0.72','14 May'],
+   ['AGENT','var(--br)','Sales Agent scored intent 0.84','Routed to the sales queue','12 May'],
+   ['CAMPAIGN','var(--warn)','Monsoon Refresh Offer delivered','Read, not clicked','8 May'],
+   ['PERSON','var(--ink3)','Tagged VIP by Arjun Kumar','','2 May']];
+  events.forEach(function(e,j){
+    tl+='<div class="tli"><span class="rail2"><i style="background:'+e[1]+'"></i>'+(j<events.length-1?'<u></u>':'')+'</span>'+
+      '<div style="flex:1"><div class="row g8"><span class="k" style="color:'+e[1]+'">'+e[0]+'</span><span class="m" style="margin:0">'+e[4]+'</span></div>'+
+      '<div class="t">'+esc(e[2])+'</div>'+(e[3]?'<div class="m">'+esc(e[3])+'</div>':'')+'</div></div>';
+  });
+
+  v.appendChild(el('<div style="display:flex;min-height:calc(100vh - 68px)">'+
+   '<div class="gr" style="min-width:0;padding:22px 24px 34px;display:flex;flex-direction:column;gap:16px">'+
+    '<div class="stats" style="grid-template-columns:repeat(4,1fr)">'+
+      '<div class="stat"><div class="lb">Total contacts</div><div class="vl num">32,680</div><div class="dl up">+12.5% this month</div></div>'+
+      '<div class="stat"><div class="lb">Customers</div><div class="vl num">18,412</div><div class="dl mut">56.3% of database</div></div>'+
+      '<div class="stat"><div class="lb">Active segments</div><div class="vl num">28</div><div class="dl mut">6 auto-updating</div></div>'+
+      '<div class="stat"><div class="lb">At risk of churn</div><div class="vl num">4,120</div><div class="dl dn">+18% vs last month</div></div>'+
+    '</div>'+
+    '<div class="card">'+
+      '<div class="hd"><div class="tabs">'+SEGS.map(function(s){
+        return '<button class="tab'+(S.cfilter===s?' on':'')+'" onclick="S.cfilter=\''+s+'\';render()">'+s+'</button>';}).join('')+'</div>'+
+        '<div class="gr"></div><span class="chipf">'+ic('filter')+'Filters</span>'+
+        '<button class="btn sm2">Import</button><button class="btn pri sm2">'+ic('plus')+'Add contact</button></div>'+
+      '<table class="tb"><thead><tr><th>Contact</th><th>Stage</th><th>Tags</th><th>Orders</th><th>Lifetime value</th><th>Session</th><th>Last activity</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody></table>'+
+      '<div class="btw pad" style="border-top:1px solid var(--ln2)"><span class="sm mut">Showing '+list.length+' of 32,680 contacts</span>'+
+      '<div class="row g6"><button class="btn sm2">Previous</button><button class="btn sm2">Next</button></div></div>'+
+    '</div></div>'+
+
+   '<aside class="cpanel"><div class="pbody">'+
+     '<div class="row g12"><span class="avw"><span class="av a56">'+c.ini+'</span><i class="ch" style="background:'+CH[c.ch]+'"></i></span>'+
+       '<div><div style="font-size:17px;font-weight:650;letter-spacing:-.02em">'+esc(c.n)+'</div>'+
+       '<div class="sm mut">'+esc(c.phone)+'</div><div class="xs mut">'+c.city+' · since '+c.since+'</div></div></div>'+
+     '<div class="row g6" style="flex-wrap:wrap">'+c.tags.map(function(t){return '<span class="tag t-br">'+ic('tag')+t+'</span>';}).join('')+
+       '<button class="tag t-nt">+ Add tag</button></div>'+
+     '<div class="row g8"><button class="btn pri sm2" style="flex:1;justify-content:center" onclick="go(\'inbox\')">'+ic('chat')+'Message</button>'+
+       '<button class="btn sm2" style="flex:1;justify-content:center">Add to campaign</button></div>'+
+     '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">'+
+       '<div class="note" style="text-align:center"><div class="xs mut">Lifetime</div><div class="num" style="font-size:15px;font-weight:650;margin-top:3px">'+c.ltv+'</div></div>'+
+       '<div class="note" style="text-align:center"><div class="xs mut">Orders</div><div class="num" style="font-size:15px;font-weight:650;margin-top:3px">'+c.orders+'</div></div>'+
+       '<div class="note" style="text-align:center"><div class="xs mut">Stage</div><div style="font-size:13px;font-weight:600;margin-top:5px">'+c.stage+'</div></div></div>'+
+     '<div class="aisug"><div class="row g8">'+ic('spark','spark2')+'<span class="eyebrow" style="color:var(--br)">AI INSIGHT</span></div>'+
+       '<div style="font-size:12.8px;line-height:1.55">'+esc(c.insight)+'</div>'+
+       '<button class="btn sm2" style="align-self:flex-start;background:#fff">Act on this</button></div>'+
+     '<div><div class="eyebrow" style="margin-bottom:10px">ACTIVITY TIMELINE</div><div class="tline">'+tl+'</div></div>'+
+   '</div></aside></div>'));
+}
+
+/* ================= 4 · CAMPAIGNS ================= */
+function rCamps(v){
+  var c=CAMPS[S.camp],rows='';
+  CAMPS.forEach(function(k,i){
+    var stc={Running:'t-br',Completed:'t-ok',Scheduled:'t-wn',Draft:'t-nt'}[k.st];
+    var rate=k.sent?Math.round(k.del/k.sent*1000)/10+'%':'—';
+    rows+='<tr class="'+(i===S.camp?'on':'')+'" onclick="S.camp='+i+';render()">'+
+      '<td><div class="row g10"><span class="pip" style="width:8px;height:8px;background:'+CH[k.ch]+'"></span>'+
+        '<div><div class="nm">'+esc(k.n)+(k.ai?' <span class="tag t-br" style="margin-left:4px">'+ic('spark')+'AI</span>':'')+'</div>'+
+        '<div class="s2">'+k.ch+' · '+k.sub+'</div></div></div></td>'+
+      '<td><span class="tag '+stc+'">'+k.st+'</span></td>'+
+      '<td><div class="sm">'+esc(k.aud)+'</div><div class="s2 num">'+k.size.toLocaleString('en-IN')+' contacts</div></td>'+
+      '<td class="num">'+rate+'</td>'+
+      '<td class="num">'+(k.sent?Math.round(k.read/k.sent*1000)/10+'%':'—')+'</td>'+
+      '<td class="num">'+(k.cvr||'—')+'</td>'+
+      '<td class="num" style="font-weight:550">'+k.rev+'</td>'+
+      '<td class="num mut">'+k.spend+'</td></tr>';
+  });
+  var fun=[['Sent',c.sent],['Delivered',c.del],['Read',c.read],['Clicked',c.clk],['Converted',c.cvr]];
+  var base=c.sent||1,fh='';
+  fun.forEach(function(f,i){
+    var pct=f[1]/base;
+    fh+='<div style="margin-bottom:'+(i<4?'12px':'0')+'">'+
+      '<div class="btw" style="margin-bottom:5px"><span class="sm" style="font-weight:550">'+f[0]+'</span>'+
+      '<span class="xs mut num">'+f[1].toLocaleString('en-IN')+' · '+Math.round(pct*1000)/10+'%</span></div>'+
+      '<div style="height:24px;border-radius:6px;background:var(--ln2);overflow:hidden">'+
+      '<i style="display:block;height:100%;width:'+Math.max(pct*100,.6)+'%;border-radius:6px;background:'+
+      (i===4?'var(--ok)':'linear-gradient(90deg,#7C5CF0,#5B34E0)')+'"></i></div>'+
+      (i<4&&c.sent?'<div class="xs mut" style="margin-top:4px">↓ '+
+        Math.round((1-fun[i+1][1]/(f[1]||1))*1000)/10+'% drop off</div>':'')+'</div>';
+  });
+
+  v.appendChild(el('<div style="display:flex;min-height:calc(100vh - 68px)">'+
+   '<div class="gr" style="min-width:0;padding:22px 24px 34px;display:flex;flex-direction:column;gap:16px">'+
+
+    '<div class="aibar" style="padding:16px 18px">'+
+      '<div class="btw"><div class="row g10">'+ic('spark','spark2')+
+      '<div><div style="font-size:14px;font-weight:600">Generate a campaign with AI</div>'+
+      '<div class="xs mut" style="margin-top:2px">Describe the goal — Cheerio picks the segment, writes the copy and estimates the spend.</div></div></div>'+
+      '<button class="btn pri sm2">'+ic('spark')+'Generate campaign</button></div></div>'+
+
+    '<div class="stats" style="grid-template-columns:repeat(5,1fr)">'+
+      '<div class="stat"><div class="lb">Total reach</div><div class="vl num">4.28L</div><div class="dl up">+16.3%</div></div>'+
+      '<div class="stat"><div class="lb">Delivery rate</div><div class="vl num">97.8%</div><div class="dl up">+0.4%</div></div>'+
+      '<div class="stat"><div class="lb">Engagement</div><div class="vl num">61.4%</div><div class="dl up">+8.7%</div></div>'+
+      '<div class="stat"><div class="lb">Conversions</div><div class="vl num">2,121</div><div class="dl up">+20.6%</div></div>'+
+      '<div class="stat"><div class="lb">Spend</div><div class="vl num">₹15,497</div><div class="dl mut">₹7.31 per conversion</div></div>'+
+    '</div>'+
+
+    '<div class="card"><div class="hd"><div class="tabs">'+
+      ['All','Running','Scheduled','Completed','Drafts'].map(function(t,i){
+        return '<button class="tab'+(i===0?' on':'')+'">'+t+'</button>';}).join('')+'</div>'+
+      '<div class="gr"></div><span class="chipf">'+ic('filter')+'Channel</span>'+
+      '<button class="btn pri sm2">'+ic('plus')+'Create campaign</button></div>'+
+      '<table class="tb"><thead><tr><th>Campaign</th><th>Status</th><th>Audience</th><th>Delivered</th><th>Read</th><th>Conversions</th><th>Revenue</th><th>Spend</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody></table></div>'+
+   '</div>'+
+
+   '<aside class="cpanel"><div class="pbody">'+
+     '<div><div class="row g8"><span class="pip" style="width:9px;height:9px;background:'+CH[c.ch]+'"></span>'+
+       '<span class="tag '+({Running:'t-br',Completed:'t-ok',Scheduled:'t-wn',Draft:'t-nt'}[c.st])+'">'+c.st+'</span>'+
+       (c.ai?'<span class="tag t-br">'+ic('spark')+'AI generated</span>':'')+'</div>'+
+       '<div style="font-size:17px;font-weight:650;letter-spacing:-.02em;margin-top:9px">'+esc(c.n)+'</div>'+
+       '<div class="sm mut" style="margin-top:2px">'+c.ch+' · '+c.sub+'</div></div>'+
+     '<div><div class="kv"><span class="k">Audience</span><span class="v">'+esc(c.aud)+'</span></div>'+
+       '<div class="kv"><span class="k">Recipients</span><span class="v num">'+c.size.toLocaleString('en-IN')+'</span></div>'+
+       '<div class="kv"><span class="k">Schedule</span><span class="v">'+c.sched+'</span></div>'+
+       '<div class="kv"><span class="k">Template</span><span class="v">'+c.tpl+'</span></div></div>'+
+     '<div class="note" style="background:var(--warnS);border-color:#F2E3C4;color:var(--warn)">'+
+       '<div class="btw"><span class="sm" style="font-weight:600">Spend</span><span class="num" style="font-size:17px;font-weight:650">'+c.spend+'</span></div>'+
+       '<div class="xs" style="margin-top:3px">'+(c.cvr?c.cpa+' per conversion · '+c.rev+' attributed revenue':'Estimated at ₹0.72 per conversation')+'</div></div>'+
+     '<div><div class="eyebrow" style="margin-bottom:10px">FUNNEL</div>'+fh+'</div>'+
+     '<div class="row g8"><button class="btn sm2" style="flex:1;justify-content:center">Duplicate</button>'+
+       '<button class="btn pri sm2" style="flex:1;justify-content:center">View report</button></div>'+
+   '</div></aside></div>'));
+}
+
+/* ================= 5 · WORKFLOW BUILDER ================= */
+var NCOL={br:['var(--br)','var(--brS)'],ok:['var(--ok)','var(--okS)'],
+          wn:['var(--warn)','var(--warnS)'],nt:['var(--ink3)','var(--ln2)'],dg:['var(--dg)','var(--dgS)']};
+function rBuilder(v){
+  var n=NODES[S.node],canvas='',i;
+  for(i=0;i<NODES.length;i++){
+    var k=NODES[i],col=NCOL[k.c];
+    if(i>0){
+      canvas+='<div class="wire'+(k.k==='FOLLOW-UP'?' dash':'')+'"></div>';
+      if(k.k==='CONDITION'||k.k==='FOLLOW-UP'){
+        canvas+='<span class="blab">'+(k.k==='CONDITION'?'if still in cart':'if no purchase after 24h')+'</span>';
+        canvas+='<div class="wire'+(k.k==='FOLLOW-UP'?' dash':'')+'"></div>';
+      }
+    }
+    canvas+='<button class="nd'+(i===S.node?' on':'')+(S.generated?' new':'')+'" onclick="S.node='+i+';render()">'+
+      '<span class="ni" style="background:'+col[1]+'">'+ic(k.ic).replace('<svg','<svg style="stroke:'+col[0]+'"')+'</span>'+
+      '<span style="flex:1;min-width:0"><span class="nk" style="color:'+col[0]+'">'+k.k+'</span>'+
+      '<div class="nt">'+esc(k.t)+'</div><div class="ns">'+esc(k.s)+'</div></span>'+
+      '<span class="no num">'+(i+1)+'</span></button>';
+  }
+  canvas+='<div class="wire dash"></div><button class="addn" onclick="addStep()">+</button>';
+
+  var nl=[['When',0],['a cart is abandoned',1],['wait',0],['2 hours',1],['then have the',0],['Sales Agent',1],
+          ['write a personalised message and send it over',0],['WhatsApp',1],['. If there is no purchase after',0],
+          ['24 hours',1],['follow up by',0],['SMS',1]];
+  var nlh='';nl.forEach(function(p){nlh+=p[1]?'<b>'+p[0]+'</b>':'<span>'+p[0]+'</span>';});
+
+  var cfg='';n.cfg.forEach(function(f){
+    cfg+='<div class="fldg"><label>'+f[0].toUpperCase()+'</label><div class="inp">'+esc(f[1])+'</div></div>';});
+
+  v.appendChild(el('<div class="bwrap" style="height:calc(100vh - 68px)">'+
+   '<div class="bcv">'+
+    '<div class="bprompt">'+
+      '<div class="btw"><div class="row g10">'+ic('spark','spark2')+
+        '<div><div style="font-size:14px;font-weight:600">Abandoned Cart Recovery</div>'+
+        '<div class="xs mut" style="margin-top:2px">'+(S.generated?'Generated from your description — review each step before publishing':'Draft · 7 steps · last edited 2 hours ago')+'</div></div></div>'+
+        '<div class="row g8">'+(S.generated?'<span class="tag t-br">'+ic('spark')+'AI generated</span>':'<span class="tag t-wn">Draft</span>')+
+        '<button class="btn sm2">'+ic('play')+'Test run</button>'+
+        '<button class="btn pri sm2" onclick="pubFlow()">Publish</button></div></div>'+
+      '<div class="fld" style="display:flex;align-items:center;gap:10px;background:var(--sf2);border:1px solid var(--ln);border-radius:11px;padding:5px 5px 5px 13px">'+
+        ic('spark','spark2')+
+        '<input id="bq" style="flex:1;font-size:13px;padding:9px 0" placeholder="Describe a change — “also send an SMS if they don\'t reply in 2 hours”">'+
+        '<button class="btn pri sm2" onclick="applyNL()">Apply</button></div>'+
+    '</div>'+
+    '<div class="bstage">'+canvas+'</div>'+
+    '<div class="nlbar">'+ic('spark','spark2')+nlh+'</div>'+
+   '</div>'+
+
+   '<aside class="bside">'+
+    '<div class="btw" style="margin-bottom:16px"><div class="row g8">'+
+      '<span class="tag t-nt num">Step '+(S.node+1)+'</span><span class="h2">'+esc(n.t)+'</span></div></div>'+
+    '<div style="display:flex;flex-direction:column;gap:14px">'+cfg+
+    '<div class="fldg"><label>WHEN THIS RUNS</label><div class="seg">'+
+      '<button class="on">Always</button><button>Business hours</button></div></div>'+
+    (n.k==='CONNECTOR'||n.k==='ACTION'||n.k==='FOLLOW-UP'
+      ? '<div class="alert" style="background:var(--warnS);color:var(--warn)"><b>Costs money</b>'+
+        '<p>Roughly 8,900 runs a week at ₹0.72 — about ₹6,400 a week.</p></div>'
+      : '<div class="alert" style="background:var(--okS);color:var(--ok)"><b>Free step</b>'+
+        '<p>Runs on your own data. No message charge.</p></div>')+
+    '<div class="aisug"><div class="row g8">'+ic('spark','spark2')+'<span class="eyebrow" style="color:var(--br)">WHY THIS STEP</span></div>'+
+      '<div style="font-size:12.6px;line-height:1.55">You asked for a two-hour delay. Across 8,932 past runs, 90 minutes converted better — 4.8% against 3.1%. I have kept your two hours, but you can change it here.</div>'+
+      '<button class="btn sm2" style="align-self:flex-start;background:#fff">Use 90 minutes</button></div>'+
+    '<div class="row g8"><button class="btn sm2" style="flex:1;justify-content:center">Duplicate</button>'+
+      '<button class="btn sm2" style="flex:1;justify-content:center;color:var(--dg)">Delete step</button></div>'+
+    '</div></aside></div>'));
+}
+function applyNL(){
+  var q=document.getElementById('bq');
+  if(!q.value.trim()){q.style.outline='1px solid var(--dg)';return;}
+  NODES.push({k:"FOLLOW-UP",t:"Send SMS follow-up",s:"Added from your description — review it",c:"wn",ic:"refresh",
+    cfg:[["Channel","SMS"],["Condition","No reply in 2 hours"],["Cost","₹0.20 per message"]]});
+  S.node=NODES.length-1;S.generated=true;render();
+}
+function addStep(){
+  NODES.push({k:"ACTION",t:"New step",s:"Choose what this step should do",c:"nt",ic:"plus",
+    cfg:[["Type","Not set"],["Channel","Not set"]]});
+  S.node=NODES.length-1;render();
+}
+function pubFlow(){S.generated=false;alert('Workflow published. It will run on the next abandoned cart.');render();}
+
+/* ================= 6 · CONNECTORS & AI AGENTS ================= */
+function rConnect(v){
+  var cats=['All','Messaging','E-commerce','CRM','Payments','Data','Support','Internal'];
+  var list=CONNECTORS.filter(function(c){return S.connFilter==='All'||c.cat===S.connFilter;});
+  var cn='';
+  list.forEach(function(c){
+    var stc=c.st==='Connected'?'t-ok':c.st==='Action needed'?'t-wn':'t-nt';
+    cn+='<div class="cn"><div class="row g12">'+
+      '<span class="lg" style="background:'+c.bg+'">'+c.ini+'</span>'+
+      '<div style="flex:1;min-width:0"><div class="nm">'+esc(c.n)+'</div><div class="ct">'+c.cat+'</div></div>'+
+      '<span class="tag '+stc+'">'+c.st+'</span></div>'+
+      '<div class="ds">'+esc(c.d)+'</div>'+
+      '<div class="perm">'+c.perms.map(function(p){return '<span>'+p+'</span>';}).join('')+'</div>'+
+      '<div class="btw" style="border-top:1px solid var(--ln2);padding-top:11px">'+
+      '<span class="xs mut">'+(c.st==='Not connected'?'Not set up':'Synced '+c.sync)+' · '+c.flows+' workflows</span>'+
+      '<button class="btn sm2">'+(c.st==='Connected'?'Manage':c.st==='Action needed'?'Reconnect':'Connect')+'</button></div></div>';
+  });
+  var ag='';
+  AGENTS.forEach(function(a,i){
+    var spark='';a.perf.forEach(function(h,j){
+      spark+='<i style="flex:1;border-radius:3px 3px 0 0;background:'+(j>5?'var(--br)':'var(--brL)')+';height:'+h+'%"></i>';});
+    ag+='<div class="agent"><div class="top2">'+
+      '<span class="fig" style="background:'+a.bg+'">'+ic(a.ic)+'</span>'+
+      '<div style="flex:1;min-width:0"><div class="row g8"><span style="font-size:15.5px;font-weight:650;letter-spacing:-.02em">'+a.n+'</span>'+
+        '<span class="tag '+(a.on?'t-ok':'t-nt')+'">'+(a.on?'Active':'Paused')+'</span></div>'+
+        '<div class="sm mut" style="margin-top:3px">'+a.role+'</div></div>'+
+      '<button class="tog'+(a.on?' on':'')+'" onclick="AGENTS['+i+'].on=!AGENTS['+i+'].on;render()"><i></i></button></div>'+
+      '<div class="met"><div><div class="xs mut">Tasks completed</div><div class="v num">'+a.tasks+'</div></div>'+
+        '<div><div class="xs mut">'+a.rateL+'</div><div class="v num">'+a.rate+'</div></div>'+
+        '<div><div class="xs mut">'+a.handL+'</div><div class="v num">'+a.hand+'</div></div></div>'+
+      '<div class="pad" style="border-top:1px solid var(--ln2);display:flex;flex-direction:column;gap:13px">'+
+        '<div><div class="eyebrow" style="margin-bottom:7px">PERFORMANCE · 8 WEEKS</div>'+
+          '<div style="display:flex;align-items:flex-end;gap:4px;height:44px">'+spark+'</div></div>'+
+        '<div><div class="eyebrow" style="margin-bottom:7px">SKILLS</div>'+
+          '<div class="perm">'+a.skills.map(function(s){return '<span>'+s+'</span>';}).join('')+'</div></div>'+
+        '<div><div class="eyebrow" style="margin-bottom:7px">USES CONNECTORS</div>'+
+          '<div class="perm">'+a.conn.map(function(s){return '<span>'+s+'</span>';}).join('')+'</div></div>'+
+        '<div class="row g8"><button class="btn sm2" style="flex:1;justify-content:center">View transcripts</button>'+
+          '<button class="btn sm2" style="flex:1;justify-content:center">Configure</button></div>'+
+      '</div></div>';
+  });
+
+  v.appendChild(el('<div class="wrap">'+
+    '<div class="stats">'+
+      '<div class="stat"><div class="lb">Connected apps</div><div class="vl num">8</div><div class="dl mut">of 9 available</div></div>'+
+      '<div class="stat"><div class="lb">Needs attention</div><div class="vl num">1</div><div class="dl dn">Instagram token expiring</div></div>'+
+      '<div class="stat"><div class="lb">Active AI agents</div><div class="vl num">2 <span style="font-size:15px;color:var(--ink3);font-weight:500">of 3</span></div><div class="dl mut">Retention Agent paused</div></div>'+
+      '<div class="stat"><div class="lb">Agent tasks this month</div><div class="vl num">33,466</div><div class="dl up">+19.2%</div></div>'+
+    '</div>'+
+
+    '<div class="card"><div class="hd"><div><h3>Connected integrations</h3>'+
+      '<div class="s">Apps Cheerio can read from and write to</div></div><div class="gr"></div>'+
+      '<button class="btn pri sm2">'+ic('plus')+'Add connector</button></div>'+
+      '<div class="pad" style="padding-bottom:8px"><div class="tabs" style="display:inline-flex">'+
+      cats.map(function(c){return '<button class="tab'+(S.connFilter===c?' on':'')+'" onclick="S.connFilter=\''+c+'\';render()">'+c+'</button>';}).join('')+
+      '</div></div>'+
+      '<div class="pad" style="padding-top:8px"><div class="grid3">'+cn+'</div></div></div>'+
+
+    '<div class="card" style="background:transparent;border:none;box-shadow:none">'+
+      '<div class="btw" style="margin-bottom:14px"><div><div class="h2" style="font-size:16px">AI Agents</div>'+
+      '<div class="sm mut" style="margin-top:2px">Workers that handle jobs end to end, using your connectors</div></div>'+
+      '<button class="btn pri sm2">'+ic('plus')+'Create agent</button></div>'+
+      '<div class="grid3">'+ag+'</div></div>'+
+  '</div>'));
+}
+
+/* ================= boot ================= */
+document.querySelectorAll('.nv').forEach(function(b){
+  b.addEventListener('click',function(){go(b.dataset.p);});
+});
+render();
+</script>
+</body>
+</html>
