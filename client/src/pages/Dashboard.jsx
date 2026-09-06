@@ -75,11 +75,30 @@ const SUGGESTIONS = [
   'Route high-value leads to the sales team',
 ]
 
+const ALL_NAV = [
+  { key: 'dash', label: 'Dashboard', title: ['Dashboard', 'Overview of your automation'] },
+  { key: 'inbox', label: 'Inbox', title: ['Inbox', 'Every channel in one queue'] },
+  { key: 'contacts', label: 'Contacts', title: ['Contacts', '32,680 customers and leads'] },
+  { key: 'campaigns', label: 'Campaigns', title: ['Campaigns', 'Reach, engagement and revenue'] },
+  { key: 'builder', label: 'Workflows', title: ['Workflow Builder', 'Describe it — Cheerio builds it'] },
+  { key: 'connect', label: 'Connectors & Agents', title: ['Connectors & Agents', 'What Cheerio is plugged into'] },
+]
+
+function ComingSoon({ label }) {
+  return (
+    <div className="card" style={{ padding: '60px 40px', textAlign: 'center' }}>
+      <div className="h2">{label} is coming soon</div>
+      <p className="sm mut" style={{ marginTop: 8 }}>This section hasn&apos;t been built yet.</p>
+    </div>
+  )
+}
+
 export default function Dashboard() {
   const navigate = useNavigate()
   const [backendStatus, setBackendStatus] = useState('checking...')
   const [query, setQuery] = useState('')
   const [toast, setToast] = useState('')
+  const [activeSection, setActiveSection] = useState('dash')
   const toastTimer = useRef(null)
 
   useEffect(() => {
@@ -95,10 +114,7 @@ export default function Dashboard() {
     toastTimer.current = setTimeout(() => setToast(''), 2600)
   }
 
-  const goToSection = (key) => {
-    if (key === 'dash') return
-    flash(`${NAV.concat(AUTOMATION_NAV).find((n) => n.key === key)?.label} is coming soon`)
-  }
+  const activeTitle = ALL_NAV.find((n) => n.key === activeSection)?.title ?? ALL_NAV[0].title
 
   return (
     <div id="app">
@@ -106,8 +122,8 @@ export default function Dashboard() {
         <div className="brand"><span className="mk">C</span><b>Cheerio AI</b></div>
 
         {NAV.map((n) => (
-          <button key={n.key} className={`nv${n.key === 'dash' ? ' on' : ''}`} onClick={() => goToSection(n.key)}>
-            <Icon name={n.key} />
+          <button key={n.key} className={`nv${n.key === activeSection ? ' on' : ''}`} onClick={() => setActiveSection(n.key)}>
+            <svg viewBox="0 0 24 24">{n.icon}</svg>
             <span className="lb">{n.label}</span>
             {n.count != null && <span className="ct">{n.count}</span>}
           </button>
@@ -115,8 +131,8 @@ export default function Dashboard() {
 
         <div className="sec">AUTOMATION</div>
         {AUTOMATION_NAV.map((n) => (
-          <button key={n.key} className="nv" onClick={() => goToSection(n.key)}>
-            <Icon name={n.key} />
+          <button key={n.key} className={`nv${n.key === activeSection ? ' on' : ''}`} onClick={() => setActiveSection(n.key)}>
+            <svg viewBox="0 0 24 24">{n.icon}</svg>
             <span className="lb">{n.label}</span>
           </button>
         ))}
@@ -132,8 +148,8 @@ export default function Dashboard() {
       <main className="main">
         <header className="top">
           <div>
-            <h1>Dashboard</h1>
-            <div className="sb">Overview of your automation · backend {backendStatus}</div>
+            <h1>{activeTitle[0]}</h1>
+            <div className="sb">{activeTitle[1]}{activeSection === 'dash' ? ` · backend ${backendStatus}` : ''}</div>
           </div>
           <div className="gr"></div>
           <div className="srch">
@@ -157,6 +173,10 @@ export default function Dashboard() {
         </header>
 
         <div className="wrap">
+        {activeSection !== 'dash' ? (
+          <ComingSoon label={activeTitle[0]} />
+        ) : (
+          <>
           <div className="aibar">
             <div className="btw">
               <div>
@@ -282,6 +302,8 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
+          </>
+        )}
         </div>
       </main>
 
