@@ -1,0 +1,209 @@
+/* ==================================================================
+   WhatsApp Team Inbox — three panel layout
+   ================================================================== */
+
+.ti { display: flex; flex: none; min-height: 0; height: calc(100vh - 68px); overflow: hidden; background: var(--sf); }
+
+/* ---------- left: chat list ---------- */
+.ti-list { width: 344px; flex: none; border-right: 1px solid var(--ln); display: flex; flex-direction: column; min-height: 0; background: var(--sf); }
+.ti-lhd { padding: 13px 14px 11px; border-bottom: 1px solid var(--ln); display: flex; flex-direction: column; gap: 10px; flex: none; }
+.ti-search { display: flex; align-items: center; gap: 8px; background: var(--sf2); border: 1px solid var(--ln); border-radius: 10px; padding: 8px 11px; }
+.ti-search svg { width: 15px; height: 15px; fill: none; stroke: var(--ink3); stroke-width: 1.9; stroke-linecap: round; }
+.ti-search input { flex: 1; min-width: 0; font-size: 13px; }
+.ti-search input::placeholder { color: var(--ink4); }
+.ti-search .clr { color: var(--ink4); font-size: 15px; line-height: 1; padding: 0 2px; }
+.ti-search .clr:hover { color: var(--ink2); }
+
+.ti-stabs { display: flex; gap: 4px; flex-wrap: wrap; }
+.ti-stabs::-webkit-scrollbar { display: none; }
+.ti-stab {
+  display: inline-flex; align-items: center; gap: 5px; padding: 5px 9px; border-radius: 8px;
+  font-size: 11.7px; font-weight: 550; color: var(--ink3); border: 1px solid var(--ln); white-space: nowrap;
+}
+.ti-stab:hover { background: var(--sf2); }
+.ti-stab.on { background: var(--brS); color: var(--br); border-color: var(--brL); }
+.ti-stab .cnt { font-size: 10.5px; font-weight: 650; background: rgba(15,16,32,.06); border-radius: 99px; padding: 0 5px; min-width: 16px; text-align: center; }
+.ti-stab.on .cnt { background: rgba(91,52,224,.14); }
+
+.ti-filters { display: flex; gap: 6px; flex-wrap: wrap; }
+.selchip { position: relative; display: inline-flex; align-items: center; }
+.selchip select {
+  appearance: none; -webkit-appearance: none; border: 1px solid var(--ln); background: var(--sf); color: var(--ink2);
+  border-radius: 9px; padding: 6px 24px 6px 10px; font-size: 11.8px; cursor: pointer; font-family: inherit;
+}
+.selchip select:hover { background: var(--sf2); }
+.selchip::after { content: ""; position: absolute; right: 9px; width: 6px; height: 6px; border-right: 1.6px solid var(--ink3); border-bottom: 1.6px solid var(--ink3); transform: translateY(-2px) rotate(45deg); pointer-events: none; }
+
+.ti-scroll { overflow-y: auto; flex: 1; min-height: 0; }
+.ti-empty { padding: 40px 24px; text-align: center; color: var(--ink3); font-size: 12.5px; line-height: 1.6; }
+
+.ti-cv { display: block; width: 100%; text-align: left; padding: 12px 14px 11px; border-bottom: 1px solid var(--ln2); position: relative; }
+.ti-cv:hover { background: var(--sf2); }
+.ti-cv.on { background: var(--brS); }
+.ti-cv.on::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--br); }
+.ti-cv .nm { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ti-cv .pv { font-size: 12px; color: var(--ink3); margin: 4px 0 7px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ti-cv .pv b { font-weight: 600; color: var(--ink2); }
+.ti-cv.unread .nm::after { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--br); margin-left: 6px; vertical-align: middle; }
+.ti-cv .foot { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.ti-asgn {
+  display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 550; color: var(--ink3);
+  background: var(--sf2); border: 1px solid var(--ln); border-radius: 99px; padding: 2px 8px 2px 2px;
+}
+.ti-asgn.none { padding-left: 8px; color: var(--warn); background: var(--warnS); border-color: #EFD9AE; }
+.ti-asgn .av { width: 16px; height: 16px; font-size: 8px; }
+.st-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+
+/* ---------- centre: thread ---------- */
+.ti-thread { flex: 1; min-width: 0; display: flex; flex-direction: column; background: var(--bg); min-height: 0; }
+.ti-thd { background: var(--sf); border-bottom: 1px solid var(--ln); padding: 10px 18px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; flex: none; }
+.ti-thd .who { min-width: 0; }
+.ti-thd .who .n { font-size: 14.5px; font-weight: 600; letter-spacing: -.01em; }
+.ti-thd .who .s { font-size: 11.5px; color: var(--ink3); margin-top: 1px; }
+
+/* dropdown menus */
+.dd { position: relative; }
+.dd-btn {
+  display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--ln); background: var(--sf);
+  border-radius: 9px; padding: 6px 10px; font-size: 12px; font-weight: 550; color: var(--ink2); white-space: nowrap;
+}
+.dd-btn:hover { background: var(--sf2); }
+.dd-btn svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.dd-btn .cap { color: var(--ink4); font-weight: 500; }
+.dd-menu {
+  position: absolute; top: calc(100% + 6px); right: 0; z-index: 40; min-width: 218px; background: var(--sf);
+  border: 1px solid var(--ln); border-radius: 12px; box-shadow: var(--shL); padding: 6px; display: flex; flex-direction: column; gap: 1px;
+}
+.dd-menu.left { right: auto; left: 0; }
+.dd-menu .hdl { font-size: 10px; font-weight: 650; letter-spacing: .08em; color: var(--ink4); padding: 8px 10px 5px; }
+.dd-item {
+  display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 8px; font-size: 12.5px;
+  color: var(--ink2); text-align: left; width: 100%;
+}
+.dd-item:hover { background: var(--sf2); }
+.dd-item.on { background: var(--brS); color: var(--br); font-weight: 600; }
+.dd-item .sub { font-size: 10.5px; color: var(--ink4); }
+.dd-item .av { width: 22px; height: 22px; font-size: 9px; }
+.dd-scrim { position: fixed; inset: 0; z-index: 35; }
+
+/* messages */
+.ti-msgs { flex: 1; min-height: 0; overflow-y: auto; padding: 20px 26px 16px; display: flex; flex-direction: column; gap: 13px; }
+.ti-day { align-self: center; background: var(--sf); border: 1px solid var(--ln); border-radius: 99px; padding: 3px 12px; font-size: 11px; color: var(--ink3); }
+.ti-bub { max-width: 66%; padding: 10px 13px 8px; border-radius: 14px; font-size: 13px; line-height: 1.55; position: relative; width: fit-content; box-shadow: 0 1px 1px rgba(15,16,32,.04); }
+.ti-bub.them { background: var(--sf); border: 1px solid var(--ln); border-bottom-left-radius: 5px; align-self: flex-start; }
+.ti-bub.us { background: #E7F8EF; border: 1px solid #C9EBD9; border-bottom-right-radius: 5px; align-self: flex-end; }
+.ti-bub .meta { font-size: 10px; color: var(--ink4); margin-top: 5px; display: flex; align-items: center; gap: 5px; justify-content: flex-end; }
+.ti-bub .meta .rd { color: #2A8FD4; font-weight: 700; letter-spacing: -1px; }
+.ti-bub .sender {
+  position: absolute; top: -9px; right: 12px; background: var(--sf); color: var(--ink2); font-size: 9.5px; font-weight: 600;
+  padding: 2px 8px; border-radius: 99px; border: 1px solid var(--ln); display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 1px 2px rgba(15,16,32,.06);
+}
+.ti-bub .sender .av { width: 13px; height: 13px; font-size: 7px; }
+.ti-tplhdr { display: flex; align-items: center; gap: 6px; font-size: 9.5px; font-weight: 650; letter-spacing: .06em; color: var(--br); margin-bottom: 6px; }
+.ti-tplhdr svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2; }
+.ti-btns { margin-top: 9px; display: flex; flex-direction: column; gap: 4px; border-top: 1px solid rgba(15,16,32,.08); padding-top: 7px; }
+.ti-btns span { text-align: center; font-size: 12px; font-weight: 550; color: #1E7BD4; padding: 4px; }
+.ti-img { width: 216px; height: 132px; border-radius: 10px; margin-bottom: 7px; display: flex; align-items: center; justify-content: center; }
+.ti-img svg { width: 30px; height: 30px; fill: none; stroke: rgba(255,255,255,.9); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+.ti-note {
+  align-self: center; width: min(74%, 560px); background: #FEF9E9; border: 1px solid #F3E3B4; border-radius: 12px;
+  padding: 10px 13px; font-size: 12.5px; line-height: 1.55; color: #6B5312;
+}
+.ti-note .nhd { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; font-size: 11px; font-weight: 600; color: #8A6A18; }
+.ti-note .nhd .av { width: 18px; height: 18px; font-size: 8px; }
+.ti-note .nhd svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.9; }
+.ti-note .when { margin-left: auto; font-weight: 500; color: #A98C33; font-size: 10.5px; }
+
+.ti-sysbar { padding: 8px 20px; font-size: 12px; font-weight: 500; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; flex: none; }
+
+/* composer */
+.ti-comp { background: var(--sf); border-top: 1px solid var(--ln); padding: 0 0 11px; display: flex; flex-direction: column; flex: none; position: relative; }
+.ti-comp.note { background: #FFFCF2; }
+.ti-modes { display: flex; gap: 2px; padding: 0 18px; border-bottom: 1px solid var(--ln2); }
+.ti-mode { padding: 10px 12px 8px; font-size: 12.5px; color: var(--ink3); border-bottom: 2px solid transparent; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+.ti-mode svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.ti-mode.on { color: var(--br); border-bottom-color: var(--br); font-weight: 600; }
+.ti-comp.note .ti-mode.on { border-bottom-color: #D9A62A; color: #8A6A18; }
+.ti-ta { padding: 11px 18px 8px; }
+.ti-ta textarea { resize: none; min-height: 44px; max-height: 150px; font-size: 13.2px; width: 100%; line-height: 1.55; }
+.ti-ta textarea::placeholder { color: var(--ink4); }
+.ti-tools { display: flex; align-items: center; gap: 6px; padding: 0 18px; flex-wrap: wrap; }
+.ti-tool { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; color: var(--ink3); border: 1px solid transparent; }
+.ti-tool:hover { background: var(--sf2); color: var(--ink2); border-color: var(--ln); }
+.ti-tool.on { background: var(--brS); color: var(--br); border-color: var(--brL); }
+.ti-tool svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ti-hint { font-size: 11px; color: var(--ink4); }
+.ti-attach { display: inline-flex; align-items: center; gap: 7px; background: var(--brS); border: 1px solid var(--brL); color: var(--br); border-radius: 8px; padding: 4px 6px 4px 9px; font-size: 11.5px; font-weight: 550; margin: 0 18px 8px; align-self: flex-start; }
+.ti-attach button { color: inherit; font-size: 14px; line-height: 1; padding: 0 3px; }
+
+/* popovers over the composer */
+.pop {
+  position: absolute; bottom: calc(100% + 8px); left: 14px; right: 14px; z-index: 45; background: var(--sf);
+  border: 1px solid var(--ln); border-radius: 14px; box-shadow: var(--shL); overflow: hidden; display: flex; flex-direction: column; max-height: 340px;
+}
+.pop .phd { padding: 11px 14px; border-bottom: 1px solid var(--ln2); display: flex; align-items: center; gap: 10px; flex: none; }
+.pop .phd .t { font-size: 13px; font-weight: 600; }
+.pop .psearch { flex: 1; background: var(--sf2); border: 1px solid var(--ln); border-radius: 8px; padding: 6px 10px; font-size: 12.5px; min-width: 0; }
+.pop .plist { overflow-y: auto; padding: 6px; }
+.pop-item { display: block; width: 100%; text-align: left; padding: 9px 11px; border-radius: 9px; }
+.pop-item:hover { background: var(--sf2); }
+.pop-item .t { font-size: 12.8px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.pop-item .sc { font-size: 10.5px; font-weight: 600; color: var(--br); background: var(--brS); border-radius: 5px; padding: 1px 6px; }
+.pop-item .b { font-size: 12px; color: var(--ink3); margin-top: 3px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.pop-cats { display: flex; gap: 4px; padding: 8px 10px 2px; flex-wrap: wrap; }
+.emoji-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 2px; padding: 8px; }
+.emoji-grid button { font-size: 18px; padding: 5px; border-radius: 7px; line-height: 1; }
+.emoji-grid button:hover { background: var(--sf2); }
+
+/* ---------- right: customer panel ---------- */
+.ti-panel { width: 348px; flex: none; border-left: 1px solid var(--ln); background: var(--sf); display: flex; flex-direction: column; min-height: 0; }
+.ti-ptabs { display: flex; border-bottom: 1px solid var(--ln); padding: 0 12px; gap: 2px; flex: none; }
+.ti-ptabs button { padding: 12px 11px 10px; font-size: 12.5px; color: var(--ink3); border-bottom: 2px solid transparent; font-weight: 500; }
+.ti-ptabs button.on { color: var(--br); border-bottom-color: var(--br); font-weight: 600; }
+.ti-pbody { padding: 16px 17px 26px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; flex: 1; min-height: 0; }
+.ti-prof { display: flex; flex-direction: column; align-items: center; gap: 9px; text-align: center; padding-bottom: 4px; }
+.ti-prof .nm { font-size: 15.5px; font-weight: 650; letter-spacing: -.01em; }
+.ti-prof .sub { font-size: 12px; color: var(--ink3); }
+.ti-quick { display: flex; gap: 6px; }
+.ti-quick button { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 4px; border: 1px solid var(--ln); border-radius: 10px; font-size: 10.5px; color: var(--ink3); background: var(--sf); }
+.ti-quick button:hover { background: var(--sf2); color: var(--br); border-color: var(--brL); }
+.ti-quick svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.sect { display: flex; flex-direction: column; gap: 8px; }
+.sect .sh { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sect .sh .lbl { font-size: 10.5px; font-weight: 650; letter-spacing: .09em; color: var(--ink4); }
+.sect .sh button { font-size: 11.5px; color: var(--br); font-weight: 600; }
+
+.lbl-pick { display: flex; flex-wrap: wrap; gap: 5px; }
+.lbl-pick button { font-size: 11px; font-weight: 550; padding: 3.5px 9px; border-radius: 7px; border: 1px dashed var(--ln); color: var(--ink3); }
+.lbl-pick button.on { background: var(--brS); color: var(--br); border: 1px solid var(--brL); }
+
+.attr { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px dashed var(--ln2); }
+.attr .k { font-size: 12px; color: var(--ink3); flex: 0 0 42%; }
+.attr input { flex: 1; min-width: 0; font-size: 12.3px; font-weight: 500; text-align: right; border-radius: 6px; padding: 3px 6px; }
+.attr input:hover, .attr input:focus { background: var(--sf2); }
+.attr .x { color: var(--ink4); font-size: 14px; line-height: 1; opacity: 0; padding: 0 2px; }
+.attr:hover .x { opacity: 1; }
+.attr .x:hover { color: var(--dg); }
+.attr-new { display: flex; gap: 6px; }
+.attr-new input { flex: 1; min-width: 0; border: 1px solid var(--ln); border-radius: 8px; padding: 6px 9px; font-size: 12px; background: var(--sf); }
+
+.hist { display: flex; flex-direction: column; gap: 8px; }
+.hist-i { border: 1px solid var(--ln); border-radius: 11px; padding: 11px 12px; background: var(--sf); }
+.hist-i:hover { border-color: var(--brL); background: var(--sf2); }
+.hist-i .t { font-size: 12.8px; font-weight: 600; }
+.hist-i .m { font-size: 11.3px; color: var(--ink3); margin-top: 4px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+.note-add { display: flex; flex-direction: column; gap: 8px; background: #FEF9E9; border: 1px solid #F3E3B4; border-radius: 11px; padding: 10px 11px; }
+.note-add textarea { resize: none; min-height: 58px; font-size: 12.5px; width: 100%; line-height: 1.55; color: #5C4710; }
+.note-add textarea::placeholder { color: #B79A4B; }
+.note-list { display: flex; flex-direction: column; gap: 9px; }
+.note-c { border: 1px solid var(--ln); border-radius: 11px; padding: 10px 12px; font-size: 12.4px; line-height: 1.55; color: var(--ink2); }
+.note-c .h { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; font-size: 11px; font-weight: 600; color: var(--ink2); }
+.note-c .h .av { width: 19px; height: 19px; font-size: 8px; }
+.note-c .h .w { margin-left: auto; color: var(--ink4); font-weight: 500; font-size: 10.5px; }
+
+@media (max-width: 1400px) { .ti-panel { width: 312px; } .ti-list { width: 312px; } }
+@media (max-width: 1180px) { .ti-panel { display: none; } }
+@media (max-width: 900px) { .ti-list { width: 100%; } .ti-thread { display: none; } }

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Icon from './Icon.jsx'
 import { SECTIONS } from '../data/cheerio.js'
+import { useStore } from '../store-context.js'
 import '../styles/app.css'
 
 const NAV_ICONS = {
@@ -15,6 +16,8 @@ const NAV_ICONS = {
 
 export default function AppLayout() {
   const navigate = useNavigate()
+  const { conversations } = useStore()
+  const unread = conversations.filter((c) => c.unread > 0).length
   const location = useLocation()
   const [backendStatus, setBackendStatus] = useState('checking…')
   const [toast, setToast] = useState('')
@@ -43,7 +46,7 @@ export default function AppLayout() {
     <NavLink key={s.key} to={s.path} className={({ isActive }) => `nv${isActive ? ' on' : ''}`}>
       <Icon name={NAV_ICONS[s.key]} />
       <span className="lb">{s.label}</span>
-      {s.count != null && <span className="ct">{s.count}</span>}
+      {s.key === 'inbox' && unread > 0 && <span className="ct num">{unread}</span>}
     </NavLink>
   )
 
