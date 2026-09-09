@@ -7,6 +7,7 @@ import Inbox from './pages/Inbox.jsx'
 import Contacts from './pages/Contacts.jsx'
 import Campaigns from './pages/Campaigns.jsx'
 import Workflows from './pages/Workflows.jsx'
+import AutoFlow from './pages/AutoFlow.jsx'
 import Connectors from './pages/Connectors.jsx'
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/campaigns" element={<Campaigns />} />
           <Route path="/workflows" element={<Workflows />} />
+          <Route path="/auto-flow" element={<AutoFlow />} />
           <Route path="/connectors" element={<Connectors />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

@@ -10,6 +10,7 @@ const NAV_ICONS = {
   contacts: 'contacts',
   campaigns: 'send',
   workflows: 'flow',
+  autoflow: 'branch',
   connectors: 'robot',
 }
 

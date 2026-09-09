@@ -178,5 +178,6 @@ export const SECTIONS = [
   { key: 'contacts', label: 'Contacts', path: '/contacts', title: ['Contacts', '32,680 customers and leads'] },
   { key: 'campaigns', label: 'Campaigns', path: '/campaigns', title: ['Campaigns', 'Reach, engagement and revenue'] },
   { key: 'workflows', label: 'Workflows', path: '/workflows', group: 'AUTOMATION', title: ['Workflow Builder', 'Describe it — Cheerio builds it'] },
+  { key: 'autoflow', label: 'Auto Flow', path: '/auto-flow', group: 'AUTOMATION', title: ['Auto Flow', 'Drag the logic together, step by step'] },
   { key: 'connectors', label: 'Connectors & Agents', path: '/connectors', group: 'AUTOMATION', title: ['Connectors & AI Agents', 'What Cheerio is plugged into'] },
 ]

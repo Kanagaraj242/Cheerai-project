@@ -23,6 +23,23 @@ const ICONS = {
   help: <><circle cx="12" cy="12" r="9.5" /><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .9-1 1.6v.3M12 17h.01" /></>,
   home: <path d="M3 10.2 12 3l9 7.2V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
   contacts: <><circle cx="12" cy="8" r="4" /><path d="M4.5 21a7.5 7.5 0 0 1 15 0" /></>,
+  branch: <><circle cx="12" cy="5" r="2.4" /><circle cx="5.5" cy="18.5" r="2.4" /><circle cx="18.5" cy="18.5" r="2.4" /><path d="M12 7.4v3.1M5.5 16.1v-1.4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1.4" /></>,
+  message: <><rect x="3" y="4.5" width="18" height="13" rx="3" /><path d="M8 21l3.5-3.5" /></>,
+  team: <><circle cx="9" cy="8.5" r="3.2" /><path d="M3 20a6 6 0 0 1 12 0" /><path d="M16.5 11.6a3 3 0 1 0-1.6-5.5M17 20a5.6 5.6 0 0 0-2-4.3" /></>,
+  flag: <><path d="M6 21V4" /><path d="M6 4.8h11l-2.2 3.7L17 12H6" /></>,
+  trash: <><path d="M4.5 6.5h15M9.5 6.5V4.8A1.3 1.3 0 0 1 10.8 3.5h2.4a1.3 1.3 0 0 1 1.3 1.3v1.7" /><path d="M6.5 6.5 7.4 19a1.6 1.6 0 0 0 1.6 1.5h6a1.6 1.6 0 0 0 1.6-1.5l.9-12.5" /><path d="M10.5 10v6.5M13.5 10v6.5" /></>,
+  close: <path d="M6 6l12 12M18 6L6 18" />,
+  map: <><path d="M9 4.5 3.5 6.8v12.7L9 17.2l6 2.3 5.5-2.3V4.5L15 6.8z" /><path d="M9 4.5v12.7M15 6.8v12.7" /></>,
+  crosshair: <><circle cx="12" cy="12" r="7" /><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3" /></>,
+  minus: <path d="M5 12h14" />,
+  calendar: <><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" /><path d="M3.5 9.8h17M8 3.5v3M16 3.5v3" /></>,
+  image: <><rect x="3.5" y="5" width="17" height="14" rx="2.5" /><circle cx="9" cy="10" r="1.6" /><path d="m4.5 17 4.8-4.4 4 3.4 2.6-2.2 3.6 3.2" /></>,
+  form: <><rect x="4.5" y="3.5" width="15" height="17" rx="2.5" /><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4" /></>,
+  webhook: <><path d="M8.8 9.4a3.6 3.6 0 1 1 5.1 3.3" /><path d="m9.6 20.2 3.4-6a3.6 3.6 0 1 1 4.7 1.4" /><path d="M14.4 20.2H8.2a3.6 3.6 0 1 1 .4-6.4" /></>,
+  camera: <><rect x="3.5" y="3.5" width="17" height="17" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17" cy="7" r="1.1" /></>,
+  emoji: <><circle cx="12" cy="12" r="8.8" /><path d="M8.8 14.2a4 4 0 0 0 6.4 0M9.3 9.7h.01M14.7 9.7h.01" /></>,
+  braces: <><path d="M9.5 3.5c-2 0-2.5 1-2.5 2.6v2.3c0 1.2-.7 2.1-2 2.4v2.4c1.3.3 2 1.2 2 2.4v2.3c0 1.6.5 2.6 2.5 2.6" /><path d="M14.5 3.5c2 0 2.5 1 2.5 2.6v2.3c0 1.2.7 2.1 2 2.4v2.4c-1.3.3-2 1.2-2 2.4v2.3c0 1.6-.5 2.6-2.5 2.6" /></>,
+  dots: <><circle cx="12" cy="5.5" r="1.4" /><circle cx="12" cy="12" r="1.4" /><circle cx="12" cy="18.5" r="1.4" /></>,
 }
 
 export default function Icon({ name, className, style }) {
