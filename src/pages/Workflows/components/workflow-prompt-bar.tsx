@@ -1,10 +1,10 @@
-import { Play, Sparkles } from 'lucide-react'
+import { LayoutGrid, Play, Sparkles } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useWorkflowStore } from '@/stores/workflow-store'
 
-export function WorkflowPromptBar() {
+export function WorkflowPromptBar({ onOpenLibrary }: { onOpenLibrary: () => void }) {
   const generated = useWorkflowStore((s) => s.generated)
   const nlPrompt = useWorkflowStore((s) => s.nlPrompt)
   const setNlPrompt = useWorkflowStore((s) => s.setNlPrompt)
@@ -15,6 +15,9 @@ export function WorkflowPromptBar() {
     <div className="flex flex-col gap-[11px] border-b border-border bg-card px-6 py-3.5">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
+          <Button size="sm" onClick={onOpenLibrary} className="xl:hidden" aria-label="Open node library">
+            <LayoutGrid /> Nodes
+          </Button>
           <Sparkles className="size-4 shrink-0 stroke-[1.7px] text-primary" />
           <div>
             <div className="text-sm font-semibold">Abandoned Cart Recovery</div>

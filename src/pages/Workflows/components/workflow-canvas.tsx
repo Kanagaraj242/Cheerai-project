@@ -18,6 +18,8 @@ const nodeTypes = {
 }
 
 const VERTICAL_GAP = 168
+const NODE_WIDTH = 440
+const CANVAS_ZOOM = 0.92
 
 export function WorkflowCanvas() {
   const nodes = useWorkflowStore((s) => s.nodes)
@@ -83,21 +85,22 @@ export function WorkflowCanvas() {
         elementsSelectable
         panOnScroll
         zoomOnScroll={false}
-        fitView
-        fitViewOptions={{ padding: 0.25, maxZoom: 1 }}
+        minZoom={0.35}
         proOptions={{ hideAttribution: true }}
       >
         <Background variant={BackgroundVariant.Dots} gap={22} size={1} color="#DEDFEC" />
-        <FitViewOnChange nodeCount={nodes.length} />
+        <FocusSelectedStep index={selectedIndex} nodeCount={nodes.length} />
       </ReactFlow>
     </div>
   )
 }
 
-function FitViewOnChange({ nodeCount }: { nodeCount: number }) {
-  const { fitView } = useReactFlow()
+// Keeps steps readable at a fixed zoom and scrolls to whichever step was just added or selected,
+// instead of shrinking the whole flow to fit a tall chain into the viewport.
+function FocusSelectedStep({ index, nodeCount }: { index: number; nodeCount: number }) {
+  const { setCenter } = useReactFlow()
   useEffect(() => {
-    fitView({ padding: 0.25, maxZoom: 1, duration: 200 })
-  }, [nodeCount, fitView])
+    setCenter(NODE_WIDTH / 2, index * VERTICAL_GAP + 45, { zoom: CANVAS_ZOOM, duration: 250 })
+  }, [index, nodeCount, setCenter])
   return null
 }

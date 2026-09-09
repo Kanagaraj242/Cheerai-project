@@ -11,6 +11,7 @@ const COSTS_MONEY = new Set(['CONNECTOR', 'ACTION', 'FOLLOW-UP'])
 export function WorkflowInspector() {
   const nodes = useWorkflowStore((s) => s.nodes)
   const selectedIndex = useWorkflowStore((s) => s.selectedIndex)
+  const removeStep = useWorkflowStore((s) => s.removeStep)
   const node = nodes[selectedIndex] ?? nodes[0]
   const [runWhen, setRunWhen] = useState<'always' | 'business'>('always')
 
@@ -93,7 +94,12 @@ export function WorkflowInspector() {
           <Button size="sm" className="flex-1 justify-center">
             Duplicate
           </Button>
-          <Button size="sm" className="flex-1 justify-center text-destructive">
+          <Button
+            size="sm"
+            className="flex-1 justify-center text-destructive"
+            disabled={nodes.length <= 1}
+            onClick={() => removeStep(selectedIndex)}
+          >
             Delete step
           </Button>
         </div>
